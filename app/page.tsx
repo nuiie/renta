@@ -1,23 +1,23 @@
-import base from "../lib/airtable"
+import { getAllProperty, Property } from "../lib/airtable"
+import { Badge } from "@/components/ui/badge"
 
 export default async function Home() {
-  const property = await base("property")
-    .select({
-      view: "Grid view",
-    })
-    .firstPage()
+  const allProperty: Property[] = (await getAllProperty()) as Property[]
 
-  console.log(property)
+  // todo
+  // 1. red, green property text decided by ongoing contract
+  // 2. put badge of contract behind property
+  //    rent amount as title, sort by date
   return (
     <div>
       <h1>Dashboard</h1>
       <p>all property</p>
       <ul>
-        {property.map((p) => {
-          const { "House No.": h, Description: desc } = p.fields
-          return <li key={p.id}>{`${h} ${desc}`}</li>
-        })}
-      </ul>
+        {allProperty?.map((p) => (
+          <li key={p.id}>{`${p.no} ${p.desc}`}</li>
+        ))}
+      </ul>{" "}
+      o
     </div>
   )
 }
