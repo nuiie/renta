@@ -12,9 +12,7 @@ export default async function Home() {
   // 2. put badge of contract behind property
   //    rent amount as title, sort by date
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>all property</p>
+    <div className="w-full mx-6">
       <ul>
         {/* {allProperty?.map((p) => (
           <li key={p.id}>{`${p.no} - ${p.desc}`}</li>
