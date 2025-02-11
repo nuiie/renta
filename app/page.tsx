@@ -33,16 +33,23 @@ export default async function Home() {
 }
 
 function BadgeGroup({ contract }) {
-  return Object.keys(contract).map((key) => (
+  const reactNode = Object.keys(contract).map((key) => (
     <Badge
       key={key}
       variant={contract[key].status == "Ongoing" ? "default" : "secondary"}
+      date={contract[key]["start date"]}
     >
       {`${contract[key].Rent.toLocaleString(undefined, {
         maximumFractionDigits: 2,
       })} [${contract[key]["start date"]}]`}
     </Badge>
   ))
+
+  //sort badge by date
+  reactNode.sort((a, b) => {
+    return new Date(b.props.date) - new Date(a.props.date)
+  })
+  return reactNode
 }
 
 function mapContractToProperty(contract, property) {
