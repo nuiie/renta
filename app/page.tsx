@@ -12,9 +12,7 @@ export default async function Home() {
   // 2. put badge of contract behind property
   //    rent amount as title, sort by date
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>all property</p>
+    <div className="w-full mx-6">
       <ul>
         {/* {allProperty?.map((p) => (
           <li key={p.id}>{`${p.no} - ${p.desc}`}</li>
@@ -33,16 +31,23 @@ export default async function Home() {
 }
 
 function BadgeGroup({ contract }) {
-  return Object.keys(contract).map((key) => (
+  const reactNode = Object.keys(contract).map((key) => (
     <Badge
       key={key}
       variant={contract[key].status == "Ongoing" ? "default" : "secondary"}
+      date={contract[key]["start date"]}
     >
       {`${contract[key].Rent.toLocaleString(undefined, {
         maximumFractionDigits: 2,
       })} [${contract[key]["start date"]}]`}
     </Badge>
   ))
+
+  //sort badge by date
+  reactNode.sort((a, b) => {
+    return new Date(b.props.date) - new Date(a.props.date)
+  })
+  return reactNode
 }
 
 function mapContractToProperty(contract, property) {
