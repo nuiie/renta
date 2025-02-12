@@ -36,16 +36,33 @@ export const getAllProperty = () => {
 export const getAllContract = () => {
   return base("contract")
     .select({
-      fields: ["property", "Rent", "status", "start date"],
+      fields: ["property", "Rent", "status", "start date", "Tenant"],
     })
     .firstPage()
     .then((records) => {
       const res = records?.map((r) => ({
         airtableId: r.getId(),
         ...r.fields,
+        rent: r.fields.Rent.toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        }),
+        property: ensure(r.fields.property[0]),
+        tenant: r.fields.Tenant,
       }))
       return res
     })
+}
+
+function ensure<T>(
+  argument: T | undefined | null,
+  message: string = "This value was promised to be there."
+): T {
+  if (argument === undefined || argument === null) {
+    throw new TypeError(message)
+  }
+
+  return argument
 }
 
 export default base
