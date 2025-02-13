@@ -1,4 +1,4 @@
-import { getAllProperty, Property, getAllContract } from "../../lib/airtable"
+import { getAllProperty, getAllContract } from "../../lib/airtable"
 import { Badge } from "@/components/ui/badge"
 
 export default async function Home() {

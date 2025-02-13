@@ -6,19 +6,10 @@ Airtable.configure({
 })
 const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
-export interface Property {
-  airtableId: number
-  id: number
-  no?: string
-  desc?: string
-  contract?: number[]
-}
-
 export const getAllProperty = () => {
   return base("property")
     .select({
-      fields: ["id", "House No.", "Description"],
-      //filterByFormula: "NOT({Contract}='')",
+      // fields: ["id", "House No.", "Description"],
     })
     .firstPage()
     .then((records) => {
@@ -27,6 +18,7 @@ export const getAllProperty = () => {
         id: r.fields.id,
         no: r.fields["House No."],
         desc: r.fields.Description,
+        ...r.fields,
       }))
       res.sort((a, b) => a.id - b.id)
       return res
@@ -35,21 +27,28 @@ export const getAllProperty = () => {
 
 export const getAllContract = () => {
   return base("contract")
-    .select({
-      fields: ["property", "Rent", "status", "start date", "Tenant"],
-    })
+    .select({})
     .firstPage()
     .then((records) => {
-      const res = records?.map((r) => ({
-        airtableId: r.getId(),
-        ...r.fields,
-        rent: r.fields.Rent.toLocaleString(undefined, {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        }),
-        property: ensure(r.fields.property[0]),
-        tenant: r.fields.Tenant,
-      }))
+      const res = records?.map(
+        (r): Contract => ({
+          airtableId: r.getId(),
+          id: r.fields.id as number,
+          property: r.fields.property[0] as string,
+          tenant: r.fields.Tenant as string,
+          rent: r.fields.Rent?.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }) as string,
+          tax: r.fields["5%"] as boolean,
+          startDate: r.fields["start date"] as string,
+          endDate: r.fields["end date"] as string,
+          duration: r.fields.duration as number,
+          status: r.fields.status as ContractStatus,
+          paymentAID: r.fields.payment as string[],
+          paymentType: r.fields["Payment type"] as PaymentType,
+        })
+      )
       return res
     })
 }
