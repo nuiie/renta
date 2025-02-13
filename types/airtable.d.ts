@@ -1,7 +1,11 @@
 declare global {
-  interface User {
-    name: string
-    email: string
+  interface Contract {
+    airtableId: string
+    property: string
+    tenant?: string
+    rent: number
+    status?: string
+    startDate?: Date
   }
 }
 

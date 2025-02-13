@@ -4,15 +4,14 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard" },
-  { href: "/property", label: "Property" },
-  { href: "/contract", label: "Contract" },
-  { href: "/payment", label: "Payment" },
-  { href: "/maintenance", label: "Maintenance" },
-  { href: "/asset", label: "Asset" },
+  { href: "/", label: "dashboard" },
+  { href: "/property", label: "property" },
+  { href: "/contract", label: "contract" },
+  { href: "/maintenance", label: "maintenance" },
+  { href: "/asset", label: "asset" },
   {
     href: "https://airtable.com/appBNQZ6kc8ziiDRA/tbloob8vM0OlPcDTD/viweonP8cvRsaDmRB",
-    label: "Airtable",
+    label: "airtable",
   },
 ]
 
@@ -29,7 +28,7 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               className={isActive ? "bg-black text-white px-2" : "px-2"}
-              target={item.label == "Airtable" ? "_blank" : ""}
+              target={item.label == "airtable" ? "_blank" : ""}
             >
               {item.label}
             </Link>
