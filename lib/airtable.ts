@@ -8,18 +8,19 @@ const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getAllProperty = () => {
   return base("property")
-    .select({
-      // fields: ["id", "House No.", "Description"],
-    })
+    .select({})
     .firstPage()
-    .then((records) => {
-      const res: Property[] = records?.map((r) => ({
-        airtableId: r.getId(),
-        id: r.fields.id,
-        no: r.fields["House No."],
-        desc: r.fields.Description,
-        ...r.fields,
-      }))
+    .then((records): Property[] => {
+      const res = records?.map(
+        (r): Property => ({
+          //return array of this object
+          airtableId: r.getId() as string,
+          id: r.fields.id as number,
+          no: r.fields["House No."] as string,
+          desc: r.fields.Description as string,
+          contract: r.fields.Contract as string[],
+        })
+      )
       res.sort((a, b) => a.id - b.id)
       return res
     })
@@ -29,39 +30,32 @@ export const getAllContract = () => {
   return base("contract")
     .select({})
     .firstPage()
-    .then((records) => {
+    .then((records): Contract[] => {
       const res = records?.map(
         (r): Contract => ({
+          // return array of this object
           airtableId: r.getId(),
           id: r.fields.id as number,
-          property: r.fields.property[0] as string,
+          propertyAId: (<string[]>r.fields.property)?.[0],
           tenant: r.fields.Tenant as string,
           rent: r.fields.Rent?.toLocaleString(undefined, {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
           }) as string,
-          tax: r.fields["5%"] as boolean,
-          startDate: r.fields["start date"] as string,
-          endDate: r.fields["end date"] as string,
-          duration: r.fields.duration as number,
-          status: r.fields.status as ContractStatus,
-          paymentAID: r.fields.payment as string[],
+          tax: (r.fields["5%"] as boolean) ?? false,
+          startDate: new Date(r.fields["start date"] as string),
+          endDate: new Date(r.fields["end date"] as string),
+          duration: r.fields["duration (months)"] as number,
+          status: (<string>(
+            r.fields.status
+          )).toLowerCase() as unknown as ContractStatus,
+          paymentAId: (r.fields.payment as string[]) ?? [],
           paymentType: r.fields["Payment type"] as PaymentType,
         })
       )
+      res.sort((a, b) => a.id - b.id)
       return res
     })
-}
-
-function ensure<T>(
-  argument: T | undefined | null,
-  message: string = "This value was promised to be there."
-): T {
-  if (argument === undefined || argument === null) {
-    throw new TypeError(message)
-  }
-
-  return argument
 }
 
 export default base

@@ -1,4 +1,14 @@
-import { getAllProperty, getAllContract } from "./airtable"
+enum ContractStatus {
+  ongoing,
+  expired,
+  terminated,
+  draft,
+}
 
-const res = await getAllContract()
-console.log(res[0])
+const a = {
+  ...ContractStatus,
+  all: 4,
+  4: "all",
+}
+
+console.log(a)

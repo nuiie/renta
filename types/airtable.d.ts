@@ -2,15 +2,15 @@ declare global {
   interface Contract {
     airtableId: string
     id: number
-    property: string
+    propertyAId: string
     tenant: string
     rent: string
     tax: boolean
-    startDate: string
-    endDate: string
+    startDate: date
+    endDate: date
     duration: number
     status: ContractStatus
-    paymentAID?: string[]
+    paymentAId?: string[]
     paymentType: PaymentType
   }
 
@@ -27,7 +27,7 @@ declare global {
   }
 
   interface Property {
-    airtableId: number
+    airtableId: string
     id: number
     no?: string
     desc?: string
