@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { formatDateDDMMYY } from "../lib/utils"
+import { formatDateDDMMYY } from "@/lib/utils"
 
 export default function ContractTable({
   contracts,
