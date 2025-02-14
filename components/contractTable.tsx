@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import { formatDateDDMMYY } from "@/lib/utils"
+import Link from "next/link"
 
 export default function ContractTable({
   contracts,
@@ -49,6 +50,7 @@ export default function ContractTable({
         <table className="table-auto">
           <thead>
             <tr>
+              <th>id</th>
               <th>tenant</th>
               <th>rent</th>
               <th>date</th>
@@ -59,6 +61,9 @@ export default function ContractTable({
             {filter == "all"
               ? contracts.map((c) => (
                   <tr key={c.id}>
+                    <td>
+                      <Link href={`/contract/${c.id}`}>{c.id}</Link>
+                    </td>
                     <td>{c.tenant}</td>
                     <td>{c.rent}</td>
                     <td>{formatDateDDMMYY(c.startDate)}</td>
@@ -71,6 +76,9 @@ export default function ContractTable({
                   )
                   .map((c) => (
                     <tr key={c.id}>
+                      <td>
+                        <Link href={`/contract/${c.id}`}>{c.id}</Link>
+                      </td>
                       <td>{c.tenant}</td>
                       <td>{c.rent}</td>
                       <td>{formatDateDDMMYY(c.startDate)}</td>

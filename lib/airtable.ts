@@ -8,7 +8,7 @@ const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getAllProperty = () => {
   return base("property")
-    .select({})
+    .select()
     .firstPage()
     .then((records): Property[] => {
       const res = records?.map(
@@ -28,7 +28,7 @@ export const getAllProperty = () => {
 
 export const getAllContract = () => {
   return base("contract")
-    .select({})
+    .select()
     .firstPage()
     .then((records): Contract[] => {
       const res = records?.map(
@@ -55,6 +55,45 @@ export const getAllContract = () => {
       )
       res.sort((a, b) => a.id - b.id)
       return res
+    })
+}
+
+export const getPaymentsFromContract = (
+  contractId: number
+): Promise<Payment[]> => {
+  return base("payment")
+    .select({
+      filterByFormula: `{Contract No.}=${contractId}`,
+    })
+    .firstPage()
+    .then((records) => {
+      return records
+        .map(
+          (r): Payment => ({
+            airtableId: r.getId(),
+            id: r.fields.id as number,
+            contractAId: (<string[]>r.fields["Contract No."])?.[0] as string,
+            due: new Date(r.fields.Due as string),
+            status: r.fields.Status as PaymentStatus,
+            type: r.fields.Type as RentPaymentType,
+            no: r.fields["payment number"] as number,
+            amountToBePaid: r.fields["Amount to be paid"]?.toLocaleString(
+              undefined,
+              {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              }
+            ) as string,
+            paidDate: new Date(r.fields["Paid Date"] as string),
+            paidAmount: r.fields["Paid Amount"]?.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            }) as string,
+            bank: r.fields.Bank as BankAccount,
+            desc: r.fields.Desc as string,
+          })
+        )
+        .sort((a, b) => a.no - b.no)
     })
 }
 

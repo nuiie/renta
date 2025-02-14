@@ -33,6 +33,40 @@ declare global {
     desc?: string
     contract?: string[]
   }
+
+  enum RentPaymentType {
+    RENT = "Rent",
+    DEPOSIT = "Security Deposit",
+  }
+
+  enum PaymentStatus {
+    NOTDUE = "Not Due",
+    PAID = "Paid",
+    OVERDUE = "Overdue",
+  }
+
+  enum BankAccount {
+    RENT = "kbank rent",
+    CASH = "cash",
+    PUB = "kbank pub",
+    MOM = "kbank mom",
+    NUI = "scb nui",
+  }
+
+  interface Payment {
+    airtableId: string
+    id: number
+    contractAId: string
+    due: Date
+    status: PaymentStatus
+    type: RentPaymentType
+    no: number
+    amountToBePaid: string
+    paidDate: Date
+    paidAmount: string
+    bank: BankAccount
+    desc: string
+  }
 }
 
 export default global

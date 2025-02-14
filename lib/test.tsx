@@ -1,14 +1,4 @@
-enum ContractStatus {
-  ongoing,
-  expired,
-  terminated,
-  draft,
-}
+import { getPaymentsFromContract } from "./airtable"
 
-const a = {
-  ...ContractStatus,
-  all: 4,
-  4: "all",
-}
-
-console.log(a)
+const a = await getPaymentsFromContract(11)
+console.log(a[0])
