@@ -12,14 +12,30 @@ export default async function Payment({
   return (
     <section className="px-6">
       <div>Payment from contract {id}</div>
-      <div>
-        {payments.map((p) => (
-          <div key={p.id}>
-            {p.id} {p.no} {p.amountToBePaid} {formatDateDDMMYY(p.due)}{" "}
-            {p.status} {p.desc}
-          </div>
-        ))}
-      </div>
+      <table className="divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>No</th>
+            <th>Amount to be Paid</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {payments.map((p) => (
+            <tr key={p.id}>
+              <td>{p.id}</td>
+              <td>{p.no}</td>
+              <td>{p.amountToBePaid}</td>
+              <td>{formatDateDDMMYY(p.due)}</td>
+              <td>{p.status}</td>
+              <td>{p.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   )
 }
