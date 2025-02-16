@@ -1,4 +1,3 @@
-import { getPaymentsFromContract } from "./airtable"
+import { getOverduePayments } from "./airtable"
 
-const a = await getPaymentsFromContract(11)
-console.log(a[0])
+console.log(await getOverduePayments())

@@ -97,4 +97,40 @@ export const getPaymentsFromContract = (
     })
 }
 
+export function getOverduePayments(): Promise<Payment[]> {
+  const res = base("payment")
+    .select({
+      filterByFormula: `{Status}='Overdue'`,
+    })
+    .firstPage()
+    .then((records) => {
+      return records.map(
+        (r): Payment => ({
+          airtableId: r.getId(),
+          id: r.fields.id as number,
+          contractAId: (<string[]>r.fields["Contract No."])?.[0] as string,
+          due: new Date(r.fields.Due as string),
+          status: r.fields.Status as PaymentStatus,
+          type: r.fields.Type as RentPaymentType,
+          no: r.fields["payment number"] as number,
+          amountToBePaid: r.fields["Amount to be paid"]?.toLocaleString(
+            undefined,
+            {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            }
+          ) as string,
+          paidDate: new Date(r.fields["Paid Date"] as string),
+          paidAmount: r.fields["Paid Amount"]?.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }) as string,
+          bank: r.fields.Bank as BankAccount,
+          desc: r.fields.Desc as string,
+        })
+      )
+    })
+  return res
+}
+
 export default base

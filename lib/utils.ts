@@ -12,3 +12,15 @@ export function formatDateDDMMYY(d: Date) {
   const formattedDate = `${date}-${month}-${year}`
   return formattedDate
 }
+
+export function calculateDaysDifference(givenDate: Date): number {
+  const today = new Date()
+
+  // Calculate the difference in time
+  const timeDifference = today.getTime() - givenDate.getTime()
+
+  // Convert time difference from milliseconds to days
+  const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24))
+
+  return daysDifference
+}

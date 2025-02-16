@@ -1,4 +1,9 @@
+import { getOverduePayments } from "@/lib/airtable"
+import { calculateDaysDifference, formatDateDDMMYY } from "@/lib/utils"
+
 export default async function Home() {
+  const overduePayments = await getOverduePayments()
+
   return (
     <div className="w-full mx-6">
       dashboard
@@ -34,6 +39,21 @@ export default async function Home() {
           </ul>
         </li>
       </ul>
+      <OverduePaymentsCard payments={overduePayments} />
+    </div>
+  )
+}
+
+function OverduePaymentsCard({ payments }: { payments: Payment[] }) {
+  return (
+    <div>
+      {payments.map((p) => (
+        <ul key={p.airtableId}>
+          {p.contractAId}
+          <li>{formatDateDDMMYY(p.due)}</li>
+          <li>{calculateDaysDifference(p.due)} days late</li>
+        </ul>
+      ))}
     </div>
   )
 }
