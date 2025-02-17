@@ -1,8 +1,10 @@
-import { getOverduePayments } from "@/lib/airtable"
+import { getOverduePayments, getAllContract } from "@/lib/airtable"
 import { calculateDaysDifference, formatDateDDMMYY } from "@/lib/utils"
 
 export default async function Home() {
   const overduePayments = await getOverduePayments()
+  const contracts = await getAllContract()
+  const contractWithOverdue = mapContractToOverdue(contracts, overduePayments)
 
   return (
     <div className="w-full mx-6">
@@ -39,21 +41,44 @@ export default async function Home() {
           </ul>
         </li>
       </ul>
-      <OverduePaymentsCard payments={overduePayments} />
+      <OverduePaymentsCard contractsWithOverdue={contractWithOverdue} />
     </div>
   )
 }
 
-function OverduePaymentsCard({ payments }: { payments: Payment[] }) {
+function OverduePaymentsCard({
+  contractsWithOverdue,
+}: {
+  contractsWithOverdue: ContractWithOverdue[]
+}) {
+  console.log(contractsWithOverdue[0])
   return (
     <div>
-      {payments.map((p) => (
+      {/* {payments.map((p) => (
         <ul key={p.airtableId}>
           {p.contractAId}
           <li>{formatDateDDMMYY(p.due)}</li>
           <li>{calculateDaysDifference(p.due)} days late</li>
         </ul>
-      ))}
+      ))} */}
     </div>
   )
+}
+
+interface ContractWithOverdue extends Contract {
+  overdue: Payment[] | null
+}
+
+function mapContractToOverdue(
+  contracts: Contract[],
+  overduePayments: Payment[]
+) {
+  const contractWithOverdue: ContractWithOverdue[] = contracts.map((c) => {
+    const overdue = overduePayments.filter(
+      (p) => p.contractAId === c.airtableId
+    )
+    return { ...c, overdue: overdue.length > 0 ? overdue : null }
+  })
+
+  return contractWithOverdue
 }
