@@ -1,10 +1,15 @@
 import { getOverduePayments, getAllContract } from "@/lib/airtable"
-import { calculateDaysDifference, formatDateDDMMYY } from "@/lib/utils"
+import {
+  calculateDaysDifference,
+  cn,
+  formatDateDDMMYY,
+  toCurrency,
+} from "@/lib/utils"
 
 export default async function Home() {
   const overduePayments = await getOverduePayments()
   const contracts = await getAllContract()
-  const contractWithOverdue = mapContractToOverdue(contracts, overduePayments)
+  const contractsWithOverdue = mapContractToOverdue(contracts, overduePayments)
 
   return (
     <div className="w-full mx-6">
@@ -14,24 +19,7 @@ export default async function Home() {
         <li>occupancy rate</li>
         <li>total properties</li>
         <li>income chart - 6 months</li>
-        <li>
-          late payment list
-          <ul>
-            <li>
-              <b>181/29</b>
-              <br />5 days late - 12,000 thb
-            </li>
-            <li>
-              <b>181/30</b>
-              <br />
-              15,000 thb - 19 days late
-              <br />
-              15,000 thb - month 19 days late
-              <br />
-              30,000 thb - total
-            </li>
-          </ul>
-        </li>
+
         <li>
           recent transaction
           <ul>
@@ -41,19 +29,48 @@ export default async function Home() {
           </ul>
         </li>
       </ul>
-      <OverduePaymentsCard contractsWithOverdue={contractWithOverdue} />
+      <h1>late payments</h1>
+      {contractsWithOverdue.map((c) => (
+        <OverduePaymentsCard key={c.airtableId} contractWithOverdue={c} />
+      ))}
     </div>
   )
 }
 
 function OverduePaymentsCard({
-  contractsWithOverdue,
+  contractWithOverdue,
 }: {
-  contractsWithOverdue: ContractWithOverdue[]
+  contractWithOverdue: ContractWithOverdue
 }) {
-  console.log(contractsWithOverdue[0])
+  const { airtableId, tenant, overdue } = contractWithOverdue
+
+  //display only if there are overdue payments
+  if (!overdue) return null
+  const total = overdue?.reduce(
+    (acc, curr) => acc + parseFloat(curr.amountToBePaid.replace(/,/g, "")),
+    0
+  )
   return (
-    <div>
+    <div
+      className={
+        "border border-gray-300 p-4 my-4 inline-block " +
+        (overdue?.length ? "bg-red-100" : "")
+      }
+    >
+      <div>contract airtable id: {airtableId}</div>
+      <div>
+        {tenant} - {overdue?.length} bills {toCurrency(total ?? 0)} thb
+      </div>
+      {overdue &&
+        overdue
+          .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime())
+          .map((p) => (
+            <div key={p.airtableId}>
+              {p.amountToBePaid} - {calculateDaysDifference(p.due)} days late -
+              due [{formatDateDDMMYY(p.due)}]
+            </div>
+          ))}
+
       {/* {payments.map((p) => (
         <ul key={p.airtableId}>
           {p.contractAId}
