@@ -1,7 +1,6 @@
 import { getOverduePayments, getAllContract } from "@/lib/airtable"
 import {
   calculateDaysDifference,
-  cn,
   formatDateDDMMYY,
   toCurrency,
 } from "@/lib/utils"
