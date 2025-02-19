@@ -1,4 +1,8 @@
-import { getOverduePayments, getAllContract } from "@/lib/airtable"
+import {
+  getOverduePayments,
+  getAllContract,
+  getAllProperty,
+} from "@/lib/airtable"
 import {
   calculateDaysDifference,
   formatDateDDMMYY,
@@ -9,6 +13,7 @@ export default async function Home() {
   const overduePayments = await getOverduePayments()
   const contracts = await getAllContract()
   const contractsWithOverdue = mapContractToOverdue(contracts, overduePayments)
+  const properties = await getAllProperty()
 
   return (
     <div className="w-full mx-6">
@@ -29,19 +34,31 @@ export default async function Home() {
         </li>
       </ul>
       <h1>late payments</h1>
-      {contractsWithOverdue.map((c) => (
-        <OverduePaymentsCard key={c.airtableId} contractWithOverdue={c} />
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {contractsWithOverdue.map((c) => {
+          const p = properties.find((p) => p.airtableId === c.propertyAId)
+          if (!p) return null
+          return (
+            <OverduePaymentsCard
+              key={c.airtableId}
+              contractWithOverdue={c}
+              property={p}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }
 
 function OverduePaymentsCard({
   contractWithOverdue,
+  property,
 }: {
   contractWithOverdue: ContractWithOverdue
+  property: Property
 }) {
-  const { airtableId, tenant, overdue } = contractWithOverdue
+  const { tenant, overdue } = contractWithOverdue
 
   //display only if there are overdue payments
   if (!overdue) return null
@@ -56,7 +73,9 @@ function OverduePaymentsCard({
         (overdue?.length ? "bg-red-100" : "")
       }
     >
-      <div>contract airtable id: {airtableId}</div>
+      <div>
+        {property.no} {property.desc}
+      </div>
       <div>
         {tenant} - {overdue?.length} bills {toCurrency(total ?? 0)} thb
       </div>
@@ -69,14 +88,6 @@ function OverduePaymentsCard({
               due [{formatDateDDMMYY(p.due)}]
             </div>
           ))}
-
-      {/* {payments.map((p) => (
-        <ul key={p.airtableId}>
-          {p.contractAId}
-          <li>{formatDateDDMMYY(p.due)}</li>
-          <li>{calculateDaysDifference(p.due)} days late</li>
-        </ul>
-      ))} */}
     </div>
   )
 }
