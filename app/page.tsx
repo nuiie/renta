@@ -16,36 +16,43 @@ export default async function Home() {
   const properties = await getAllProperty()
 
   return (
-    <div className="w-full mx-6">
+    <div className="mx-6">
       dashboard
-      <ul>
-        <li>total revenue</li>
-        <li>occupancy rate</li>
-        <li>total properties</li>
-        <li>income chart - 6 months</li>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-8 border border-black">
+          property list active/inactive
+        </div>
+        <div className="p-8 border border-black">revenue chart - 6 months</div>
+        <div className="p-8 border border-black">
+          occupancy rate chart - 6 months
+        </div>
+        <ul>
+          <li>total properties</li>
+          <li>income chart - 6 months</li>
 
-        <li>
-          recent transaction
-          <ul>
-            <li>2/1/25 181/22 rent +12,000</li>
-            <li>12/2/25 แสงทอง asset -30,000</li>
-            <li>13/5/25 ส่วนกลาง utility -450</li>
-          </ul>
-        </li>
-      </ul>
-      <h1>late payments</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {contractsWithOverdue.map((c) => {
-          const p = properties.find((p) => p.airtableId === c.propertyAId)
-          if (!p) return null
-          return (
-            <OverduePaymentsCard
-              key={c.airtableId}
-              contractWithOverdue={c}
-              property={p}
-            />
-          )
-        })}
+          <li>
+            recent transaction
+            <ul>
+              <li>2/1/25 181/22 rent +12,000</li>
+              <li>12/2/25 แสงทอง asset -30,000</li>
+              <li>13/5/25 ส่วนกลาง utility -450</li>
+            </ul>
+          </li>
+        </ul>
+        <h1>late payments</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {contractsWithOverdue.map((c) => {
+            const p = properties.find((p) => p.airtableId === c.propertyAId)
+            if (!p) return null
+            return (
+              <OverduePaymentsCard
+                key={c.airtableId}
+                contractWithOverdue={c}
+                property={p}
+              />
+            )
+          })}
+        </div>
       </div>
     </div>
   )
