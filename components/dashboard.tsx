@@ -6,14 +6,6 @@ import {
 } from "@/components/ui/accordion"
 import StackedBarChart from "./stackedBarChart"
 
-export default function Dashboard() {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  )
-}
-
 export function DashboardProperty() {
   return (
     <>
@@ -48,4 +40,16 @@ export function DashboardProperty() {
       <StackedBarChart />
     </>
   )
+}
+
+export function DashboardRevenue() {
+  return <div>revenue chart</div>
+}
+
+export function DashboardLatePayments() {
+  return <div>late paymetns</div>
+}
+
+export function DashboardRecentTransactions() {
+  return <div>recent transactions</div>
 }

@@ -9,22 +9,28 @@ import {
   toCurrency,
 } from "@/lib/utils"
 
-import { DashboardProperty } from "@/components/dashboard"
+import Dashboard, {
+  DashboardProperty,
+  DashboardRevenue,
+  DashboardLatePayments,
+  DashboardRecentTransactions,
+} from "@/components/dashboard"
 
 export default async function Home() {
-  const overduePayments = await getOverduePayments()
-  const contracts = await getAllContract()
-  const contractsWithOverdue = mapContractToOverdue(contracts, overduePayments)
-  const properties = await getAllProperty()
+  // const overduePayments = await getOverduePayments()
+  // const contracts = await getAllContract()
+  // const contractsWithOverdue = mapContractToOverdue(contracts, overduePayments)
+  // const properties = await getAllProperty()
 
   return (
     <div className="mx-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DashboardProperty />
-        <div className="p-8 border border-black">
-          revenue chart - 6 months + missing revenue
-        </div>
-        <div className="p-8 border border-black">
+        <DashboardRevenue />
+        <DashboardLatePayments />
+        <DashboardRecentTransactions />
+
+        {/* <div className="p-8 border border-black">
           late payments
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {contractsWithOverdue.map((c) => {
@@ -39,15 +45,15 @@ export default async function Home() {
               )
             })}
           </div>
-        </div>
-        <div className="p-8 border border-black">
+        </div> */}
+        {/* <div className="p-8 border border-black">
           recent transaction
           <ul>
             <li>2/1/25 181/22 rent +12,000</li>
             <li>12/2/25 แสงทอง asset -30,000</li>
             <li>13/5/25 ส่วนกลาง utility -450</li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   )
