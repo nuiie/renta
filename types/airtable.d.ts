@@ -29,9 +29,14 @@ declare global {
   interface Property {
     airtableId: string
     id: number
-    no?: string
-    desc?: string
-    contract?: string[]
+    nickname: string
+    address?: string
+    description?: string
+    gMap?: string
+    offTrack?: boolean
+    maxRent: number
+    daysLeft: number
+    contract: string[]
   }
 
   enum RentPaymentType {

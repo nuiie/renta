@@ -1,49 +1,84 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import StackedBarChart from "./stackedBarChart"
+import { toCurrency } from "@/lib/utils"
 
-export function DashboardProperty() {
+export function DashboardProperty({ properties }: { properties: Property[] }) {
+  const count = properties?.length
+  const active = properties?.filter((p) => p.daysLeft > 0)
+  const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
+  const activeCount = active?.length
+
+  const inactive = properties?.filter((p) => p.daysLeft <= 0)
+  const inactiveSum = inactive?.reduce((acc, curr) => acc + curr.maxRent, 0)
+  const inactiveCount = inactive?.length
+
+  console.log(properties[16].daysLeft)
+
   return (
-    <>
-      <div className="p-8 border border-black">
-        <h1>property - 16 total</h1>
+    <div className="p-8 border border-black">
+      <h1>property - {count} total</h1>
+      <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" />
+      <table className="table-auto">
+        <thead>
+          <tr>
+            <th>active property</th>
+            <th>rent</th>
+            <th>remaining</th>
+          </tr>
+        </thead>
+        <tbody>
+          {active
+            ?.sort((a, b) => b.maxRent - a.maxRent)
+            .map((p) => (
+              <tr key={p.airtableId}>
+                <td>{p.nickname}</td>
+                <td className="text-end">{toCurrency(p.maxRent)}</td>
+                <td className="text-end">{p.daysLeft} days</td>
+              </tr>
+            ))}
+          <tr className="text-green-600 font-meduinm">
+            <td>total active - {activeCount}</td>
+            <td className="text-end">{toCurrency(activeSum)}</td>
+            <td className="text-center">thb</td>
+          </tr>
+        </tbody>
+      </table>
 
-        <Accordion type="single" collapsible>
-          <AccordionItem value="active">
-            <AccordionTrigger>active - 70,000 thb</AccordionTrigger>
-            <AccordionContent>
-              <ul>
-                <li>181/26 - 6 months left</li>
-                <li>181/27 - 3 months left</li>
-                <li>181/28 - 1 year 2 months left</li>
-                <li>181/29 - 11 months left</li>
-                <li>181/30 - 7 months left</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="inactive">
-            <AccordionTrigger>inactive - missing 30,000 thb</AccordionTrigger>
-            <AccordionContent>
-              <ul>
-                <li>181/22 - 3 months ago</li>
-                <li>181/23 - 3 months ago</li>
-                <li>181/24 - 6 months ago</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-      <StackedBarChart />
-    </>
+      <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" />
+      <table className="table-auto">
+        <thead>
+          <tr>
+            <th>inactive property</th>
+            <th>rent</th>
+            <th>last active</th>
+          </tr>
+        </thead>
+        <tbody>
+          {inactive
+            ?.sort((a, b) => b.maxRent - a.maxRent)
+            .map((p) => (
+              <tr key={p.airtableId}>
+                <td>{p.nickname}</td>
+                <td className="text-end">{toCurrency(p.maxRent)}</td>
+                <td className="text-end">{-1 * p.daysLeft} days</td>
+              </tr>
+            ))}
+          <tr className="text-red-500 font-meduinm">
+            <td>total inactive - {inactiveCount}</td>
+            <td className="text-end">{toCurrency(inactiveSum)}</td>
+            <td className="text-center">thb</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }
 
 export function DashboardRevenue() {
-  return <div>revenue chart</div>
+  return (
+    <div>
+      <StackedBarChart />
+    </div>
+  )
 }
 
 export function DashboardLatePayments() {

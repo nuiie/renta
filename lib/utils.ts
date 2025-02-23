@@ -26,5 +26,8 @@ export function calculateDaysDifference(givenDate: Date): number {
 }
 
 export function toCurrency(amount: number): string {
-  return amount.toLocaleString("th-TH")
+  return amount.toLocaleString("th-TH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 }

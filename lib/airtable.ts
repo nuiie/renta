@@ -8,16 +8,25 @@ const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getAllProperty = () => {
   return base("property")
-    .select()
+    .select({
+      filterByFormula: `{off_track}=FALSE()`,
+    })
     .firstPage()
     .then((records): Property[] => {
       const res = records?.map(
         (r): Property => ({
-          //return array of this object
           airtableId: r.getId() as string,
           id: r.fields.id as number,
-          no: r.fields["House No."] as string,
-          desc: r.fields.Description as string,
+          nickname: r.fields.nickname as string,
+          description: r.fields.description as string,
+          gMap: r.fields.g_map as string,
+          maxRent: r.fields.max_rent as number,
+
+          // NaN in airtable will result in Object { specialValue: "NaN" }
+          daysLeft:
+            typeof r.fields.days_left == "number"
+              ? (r.fields.days_left as number)
+              : 0,
           contract: r.fields.Contract as string[],
         })
       )
@@ -33,7 +42,6 @@ export const getAllContract = () => {
     .then((records): Contract[] => {
       const res = records?.map(
         (r): Contract => ({
-          // return array of this object
           airtableId: r.getId(),
           id: r.fields.id as number,
           propertyAId: (<string[]>r.fields.property)?.[0],
@@ -63,7 +71,7 @@ export const getPaymentsFromContract = (
 ): Promise<Payment[]> => {
   return base("payment")
     .select({
-      filterByFormula: `{Contract No.}=${contractId}`,
+      filterByFormula: `{contract_id}=${contractId}`,
     })
     .firstPage()
     .then((records) => {
@@ -72,25 +80,25 @@ export const getPaymentsFromContract = (
           (r): Payment => ({
             airtableId: r.getId(),
             id: r.fields.id as number,
-            contractAId: (<string[]>r.fields["Contract No."])?.[0] as string,
-            due: new Date(r.fields.Due as string),
-            status: r.fields.Status as PaymentStatus,
-            type: r.fields.Type as RentPaymentType,
-            no: r.fields["payment number"] as number,
-            amountToBePaid: r.fields["Amount to be paid"]?.toLocaleString(
+            contractAId: (<string[]>r.fields["contract_id"])?.[0] as string,
+            due: new Date(r.fields.due as string),
+            status: r.fields.status as PaymentStatus,
+            type: r.fields.type as RentPaymentType,
+            no: r.fields["payment_number"] as number,
+            amountToBePaid: r.fields["amount_to_be_paid"]?.toLocaleString(
               undefined,
               {
                 maximumFractionDigits: 2,
                 minimumFractionDigits: 2,
               }
             ) as string,
-            paidDate: new Date(r.fields["Paid Date"] as string),
-            paidAmount: r.fields["Paid Amount"]?.toLocaleString(undefined, {
+            paidDate: new Date(r.fields.paid_date as string),
+            paidAmount: r.fields.paid_amount?.toLocaleString(undefined, {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             }) as string,
-            bank: r.fields.Bank as BankAccount,
-            desc: r.fields.Desc as string,
+            bank: r.fields.bank as BankAccount,
+            desc: r.fields.desc as string,
           })
         )
         .sort((a, b) => a.no - b.no)
@@ -108,12 +116,12 @@ export function getOverduePayments(): Promise<Payment[]> {
         (r): Payment => ({
           airtableId: r.getId(),
           id: r.fields.id as number,
-          contractAId: (<string[]>r.fields["Contract No."])?.[0] as string,
+          contractAId: (<string[]>r.fields["contract_id"])?.[0] as string,
           due: new Date(r.fields.Due as string),
           status: r.fields.Status as PaymentStatus,
           type: r.fields.Type as RentPaymentType,
-          no: r.fields["payment number"] as number,
-          amountToBePaid: r.fields["Amount to be paid"]?.toLocaleString(
+          no: r.fields["payment_number"] as number,
+          amountToBePaid: r.fields["amount_to_be_paid"]?.toLocaleString(
             undefined,
             {
               maximumFractionDigits: 2,
@@ -121,7 +129,7 @@ export function getOverduePayments(): Promise<Payment[]> {
             }
           ) as string,
           paidDate: new Date(r.fields["Paid Date"] as string),
-          paidAmount: r.fields["Paid Amount"]?.toLocaleString(undefined, {
+          paidAmount: r.fields.paid_amount?.toLocaleString(undefined, {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
           }) as string,
