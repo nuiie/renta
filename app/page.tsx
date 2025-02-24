@@ -9,6 +9,8 @@ import {
 //   toCurrency,
 // } from "@/lib/utils"
 
+import { getRecentTransaction } from "@/lib/google"
+
 import {
   DashboardProperty,
   DashboardRevenue,
@@ -21,6 +23,7 @@ export default async function Home() {
   // const contracts = await getAllContract()
   // const contractsWithOverdue = mapContractToOverdue(contracts, overduePayments)
   const properties = await getAllProperty()
+  const transactions = (await getRecentTransaction()) as string[][]
 
   return (
     <div className="mx-6 max-w-lg">
@@ -28,7 +31,7 @@ export default async function Home() {
         <DashboardProperty properties={properties} />
         <DashboardRevenue />
         <DashboardLatePayments />
-        <DashboardRecentTransactions />
+        <DashboardRecentTransactions transactions={transactions} />
 
         {/* <div className="p-8 border border-black">
           late payments
