@@ -96,16 +96,21 @@ export function DashboardLatePayments() {
 
 export function DashboardRecentTransactions({
   transactions,
+  n = 10,
 }: {
   transactions: Array<Array<string>>
+  n: number
 }) {
-  const data = transactions.toReversed().map((t) => ({
-    date: t[0],
-    method: t[1],
-    amount: !!t[2] ? `-${t[2]}` : t[3],
-    balance: t[4],
-    from: t[6],
-  }))
+  const data = transactions
+    .slice(-n)
+    .toReversed()
+    .map((t) => ({
+      date: t[0],
+      method: t[1],
+      amount: !!t[2] ? `-${t[2]}` : t[3],
+      balance: t[4],
+      from: t[6],
+    }))
 
   return (
     <Table>
