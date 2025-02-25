@@ -11,19 +11,13 @@ declare global {
     duration: number
     status: ContractStatus
     paymentAId?: string[]
-    paymentType: PaymentType
   }
 
   enum ContractStatus {
-    ongoing,
-    expired,
-    terminated,
-    draft,
-  }
-
-  enum PaymentType {
-    monthly,
-    yearly,
+    ONGOING = "Ongoing",
+    EXPIRED = "Expired",
+    TERMINATED = "Terminated",
+    DRAFT = "Draft",
   }
 
   interface Property {
@@ -65,7 +59,7 @@ declare global {
     due: Date
     status: PaymentStatus
     type: RentPaymentType
-    no: number
+    paymentNumber: number
     amountToBePaid: string
     paidDate: Date
     paidAmount: string

@@ -45,20 +45,19 @@ export const getAllContract = () => {
           airtableId: r.getId(),
           id: r.fields.id as number,
           propertyAId: (<string[]>r.fields.property)?.[0],
-          tenant: r.fields.Tenant as string,
-          rent: r.fields.Rent?.toLocaleString(undefined, {
+          tenant: r.fields.tenant as string,
+          rent: r.fields.rent?.toLocaleString(undefined, {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
           }) as string,
           tax: (r.fields["5%"] as boolean) ?? false,
-          startDate: new Date(r.fields["start date"] as string),
-          endDate: new Date(r.fields["end date"] as string),
-          duration: r.fields["duration (months)"] as number,
+          startDate: new Date(r.fields.start_date as string),
+          endDate: new Date(r.fields.end_date as string),
+          duration: r.fields.duration as number,
           status: (<string>(
-            r.fields.status
+            r.fields.contract_status
           )).toLowerCase() as unknown as ContractStatus,
           paymentAId: (r.fields.payment as string[]) ?? [],
-          paymentType: r.fields["Payment type"] as PaymentType,
         })
       )
       res.sort((a, b) => a.id - b.id)
@@ -80,12 +79,12 @@ export const getPaymentsFromContract = (
           (r): Payment => ({
             airtableId: r.getId(),
             id: r.fields.id as number,
-            contractAId: (<string[]>r.fields["contract_id"])?.[0] as string,
+            contractAId: (<string[]>r.fields.contract_id)?.[0] as string,
             due: new Date(r.fields.due as string),
-            status: r.fields.status as PaymentStatus,
+            status: r.fields.payment_status as PaymentStatus,
             type: r.fields.type as RentPaymentType,
-            no: r.fields["payment_number"] as number,
-            amountToBePaid: r.fields["amount_to_be_paid"]?.toLocaleString(
+            paymentNumber: r.fields.payment_number as number,
+            amountToBePaid: r.fields.amount_to_be_paid?.toLocaleString(
               undefined,
               {
                 maximumFractionDigits: 2,
@@ -101,14 +100,14 @@ export const getPaymentsFromContract = (
             desc: r.fields.desc as string,
           })
         )
-        .sort((a, b) => a.no - b.no)
+        .sort((a, b) => a.paymentNumber - b.paymentNumber)
     })
 }
 
 export function getOverduePayments(): Promise<Payment[]> {
   const res = base("payment")
     .select({
-      filterByFormula: `{Status}='Overdue'`,
+      filterByFormula: `{payment_status}='Overdue'`,
     })
     .firstPage()
     .then((records) => {
@@ -116,25 +115,25 @@ export function getOverduePayments(): Promise<Payment[]> {
         (r): Payment => ({
           airtableId: r.getId(),
           id: r.fields.id as number,
-          contractAId: (<string[]>r.fields["contract_id"])?.[0] as string,
-          due: new Date(r.fields.Due as string),
-          status: r.fields.Status as PaymentStatus,
-          type: r.fields.Type as RentPaymentType,
-          no: r.fields["payment_number"] as number,
-          amountToBePaid: r.fields["amount_to_be_paid"]?.toLocaleString(
+          contractAId: (<string[]>r.fields.contract_id)?.[0] as string,
+          due: new Date(r.fields.due as string),
+          status: r.fields.payment_status as PaymentStatus,
+          type: r.fields.type as RentPaymentType,
+          paymentNumber: r.fields.payment_number as number,
+          amountToBePaid: r.fields.amount_to_be_paid?.toLocaleString(
             undefined,
             {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             }
           ) as string,
-          paidDate: new Date(r.fields["Paid Date"] as string),
+          paidDate: new Date(r.fields.paid_date as string),
           paidAmount: r.fields.paid_amount?.toLocaleString(undefined, {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
           }) as string,
-          bank: r.fields.Bank as BankAccount,
-          desc: r.fields.Desc as string,
+          bank: r.fields.bank as BankAccount,
+          desc: r.fields.desc as string,
         })
       )
     })

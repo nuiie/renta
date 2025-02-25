@@ -93,8 +93,6 @@ export function DashboardRevenue({
       parseFloat(row[2].replace(/,/g, "")) < 100000 ||
       parseFloat(row[3].replace(/,/g, "")) < 100000
   )
-
-  console.log(filteredTx.slice(-5))
   const chartData = transformStatementData(filteredTx, 12)
   return (
     <div>
