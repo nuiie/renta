@@ -29,9 +29,9 @@ export default async function Home() {
     <div className="mx-6 max-w-lg">
       <div className="grid grid-cols-1 gap-4">
         <DashboardProperty properties={properties} />
-        <DashboardRevenue />
+        <DashboardRevenue transactions={transactions} />
         <DashboardLatePayments />
-        <DashboardRecentTransactions transactions={transactions} />
+        <DashboardRecentTransactions transactions={transactions} n={10} />
 
         {/* <div className="p-8 border border-black">
           late payments

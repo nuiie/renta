@@ -58,7 +58,7 @@ async function getTransaction(auth) {
   const sheets = google.sheets({ version: "v4", auth })
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: "1mdj7QGLWoRbLCb6mKqlarUeKvhxo5IzryEMCmiLxHss",
-    range: "Sheet1!A280:H",
+    range: "Sheet1!A2:H",
   })
   const rows = res.data.values
   if (!rows || rows.length === 0) {
