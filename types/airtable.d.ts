@@ -1,25 +1,4 @@
 declare global {
-  interface Contract {
-    airtableId: string
-    id: number
-    propertyAId: string
-    tenant: string
-    rent: string
-    tax: boolean
-    startDate: date
-    endDate: date
-    duration: number
-    status: ContractStatus
-    paymentAId?: string[]
-  }
-
-  enum ContractStatus {
-    ONGOING = "Ongoing",
-    EXPIRED = "Expired",
-    TERMINATED = "Terminated",
-    DRAFT = "Draft",
-  }
-
   interface Property {
     airtableId: string
     id: number
@@ -27,15 +6,40 @@ declare global {
     address?: string
     description?: string
     gMap?: string
-    offTrack?: boolean
+    //image: string[]
+    contract: string[]
+    offTrack: boolean
     maxRent: number
     daysLeft: number
-    contract: string[]
   }
 
-  enum RentPaymentType {
-    RENT = "Rent",
+  enum ContractStatus {
+    ONGOING = "Ongoing",
+    EXPIRED = "Expired",
+    TERMINATED = "Terminated",
+    // DRAFT = "Draft",
+  }
+
+  interface Contract {
+    airtableId: string
+    id: number
+    propertyAId: string
+    nickname: string
+    tenant: string
+    contractStatus: ContractStatus
+    startDate: date
+    duration: number
+    endDate: date
+    rent: number
+    commonFee: number
+    tax: boolean
+    paymentAId?: string[]
+    // soft_file: string[]
+  }
+
+  enum PaymentType {
     DEPOSIT = "Security Deposit",
+    RENT = "Rent",
   }
 
   enum PaymentStatus {
@@ -56,13 +60,13 @@ declare global {
     airtableId: string
     id: number
     contractAId: string
+    paymentType: PaymentType
+    amountToBePaid: number
     due: Date
-    status: PaymentStatus
-    type: RentPaymentType
     paymentNumber: number
-    amountToBePaid: string
+    paymentStatus: PaymentStatus
     paidDate: Date
-    paidAmount: string
+    paidAmount: number
     bank: BankAccount
     desc: string
   }

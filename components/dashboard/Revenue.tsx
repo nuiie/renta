@@ -1,5 +1,78 @@
 "use client"
 
+export default function Revenue({
+  transactions,
+}: {
+  transactions: Array<Array<string>>
+}) {
+  // discard tx > 100k
+  const filteredTx = transactions.filter(
+    (row) =>
+      parseFloat(row[2].replace(/,/g, "")) < 100000 ||
+      parseFloat(row[3].replace(/,/g, "")) < 100000
+  )
+  const chartData = transformStatementData(filteredTx, 12)
+  return (
+    <div>
+      <StackedBarChart chartData={chartData} />
+    </div>
+  )
+}
+
+function transformStatementData(
+  transactions: Array<Array<string>>,
+  month: number
+) {
+  const monthlySummary: {
+    [key: string]: { inbound: number; outbound: number }
+  } = {}
+  transactions.forEach((row) => {
+    const [dateStr, , outbound, inbound] = row
+    const [, month, year] = dateStr.split("/")
+    const monthKey = `${getMonthName(month)}-${year.slice(-2)}`
+
+    if (!monthlySummary[monthKey]) {
+      monthlySummary[monthKey] = {
+        inbound: 0,
+        outbound: 0,
+      }
+    }
+    if (inbound) {
+      monthlySummary[monthKey].inbound += parseFloat(inbound.replace(/,/g, ""))
+    }
+    if (outbound) {
+      monthlySummary[monthKey].outbound += parseFloat(
+        outbound.replace(/,/g, "")
+      )
+    }
+  })
+  return Object.entries(monthlySummary)
+    .map(([month, { inbound, outbound }]) => ({
+      month,
+      inbound,
+      outbound,
+    }))
+    .slice(-month)
+}
+
+function getMonthName(month: string) {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "June",
+    "July",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ]
+  return months[parseInt(month, 10) - 1] // Convert month number to name
+}
+
 import { TrendingUp, TrendingDown } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
@@ -35,11 +108,7 @@ interface ChartData {
   outbound: number
 }
 
-export default function StackedBarChart({
-  chartData,
-}: {
-  chartData: ChartData[]
-}) {
+function StackedBarChart({ chartData }: { chartData: ChartData[] }) {
   const formatYAxis = (value: number) => {
     if (value >= 1000) {
       return `${(value / 1000).toFixed(0)}k`
