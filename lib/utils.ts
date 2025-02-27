@@ -31,3 +31,17 @@ export function toCurrency(amount: number): string {
     maximumFractionDigits: 2,
   })
 }
+
+export function mapContractToOverdue(
+  contracts: Contract[],
+  overduePayments: Payment[]
+) {
+  const contractWithOverdue: ContractWithOverdue[] = contracts.map((c) => {
+    const overdue = overduePayments.filter(
+      (p) => p.contractAId === c.airtableId
+    )
+    return { ...c, overdue: overdue.length > 0 ? overdue : null }
+  })
+
+  return contractWithOverdue
+}

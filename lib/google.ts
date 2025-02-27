@@ -1,73 +1,29 @@
-// @ts-nocheck
-import fs from "fs/promises"
-import path from "path"
-import process from "process"
-import { authenticate } from "@google-cloud/local-auth"
+import { NextApiRequest, NextApiResponse } from "next"
 import { google } from "googleapis"
 
-const SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-const TOKEN_PATH = path.join(process.cwd(), "token.json")
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json")
-
-async function loadSavedCredentialsIfExist() {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const content = await fs.readFile(TOKEN_PATH)
-    const credentials = JSON.parse(content.toString())
-    return google.auth.fromJSON(credentials)
-  } catch (err) {
-    console.error(err)
-    return null
-  }
-}
+    const apiKey = process.env.GOOGLE_SHEETS_API_KEY // Store API key in .env.local
+    const sheetId = "1mdj7QGLWoRbLCb6mKqlarUeKvhxo5IzryEMCmiLxHss" // Replace with your actual Google Sheet ID
+    const range = "Sheet1!A2:H" // Change to match your range
 
-interface Client {
-  credentials: {
-    refresh_token: string
-  }
-}
+    if (!apiKey) {
+      return res.status(500).json({ error: "Google Sheets API key is missing" })
+    }
 
-async function saveCredentials(client: Client) {
-  const content = await fs.readFile(CREDENTIALS_PATH)
-  const keys = JSON.parse(content.toString())
-  const key = keys.installed || keys.web
-  const payload = JSON.stringify({
-    type: "authorized_user",
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  })
-  await fs.writeFile(TOKEN_PATH, payload)
-}
+    const sheets = google.sheets({ version: "v4", auth: apiKey })
 
-async function authorize() {
-  let client = await loadSavedCredentialsIfExist()
-  if (client) {
-    return client
-  }
-  client = await authenticate({
-    scopes: SCOPES,
-    keyfilePath: CREDENTIALS_PATH,
-  })
-  if (client.credentials) {
-    await saveCredentials(client)
-  }
-  return client
-}
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range,
+    })
 
-async function getTransaction(auth) {
-  const sheets = google.sheets({ version: "v4", auth })
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: "1mdj7QGLWoRbLCb6mKqlarUeKvhxo5IzryEMCmiLxHss",
-    range: "Sheet1!A2:H",
-  })
-  const rows = res.data.values
-  if (!rows || rows.length === 0) {
-    console.log("No data found.")
-    return
+    res.status(200).json({ data: response.data.values || [] })
+  } catch (error) {
+    console.error("Error fetching Google Sheets data:", error)
+    res.status(500).json({ error: "Failed to fetch data from Google Sheets" })
   }
-  return rows
-}
-
-export function getRecentTransaction(): string[][] {
-  return authorize().then(getTransaction).catch(console.error)
 }

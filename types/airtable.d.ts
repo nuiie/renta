@@ -70,6 +70,10 @@ declare global {
     bank: BankAccount
     desc: string
   }
+
+  interface ContractWithOverdue extends Contract {
+    overdue: Payment[] | null
+  }
 }
 
 export default global
