@@ -68,6 +68,6 @@ async function getTransaction(auth) {
   return rows
 }
 
-export function getRecentTransaction() {
+export function getRecentTransaction(): string[][] {
   return authorize().then(getTransaction).catch(console.error)
 }

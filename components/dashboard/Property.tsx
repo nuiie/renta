@@ -10,8 +10,6 @@ export default function Property({ properties }: { properties: Property[] }) {
   const inactiveSum = inactive?.reduce((acc, curr) => acc + curr.maxRent, 0)
   const inactiveCount = inactive?.length
 
-  console.log(properties[16].daysLeft)
-
   return (
     <div className="p-8 border border-black">
       <h1>property - {count} total</h1>
