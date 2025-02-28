@@ -11,6 +11,7 @@ declare global {
     offTrack: boolean
     maxRent: number
     daysLeft: number
+    launchDate: date
   }
 
   enum ContractStatus {
