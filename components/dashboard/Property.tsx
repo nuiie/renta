@@ -1,6 +1,9 @@
 import { toCurrency } from "@/lib/utils"
+import { getProperties } from "@/lib/airtable"
 
-export default function Property({ properties }: { properties: Property[] }) {
+export default async function Property() {
+  const properties = await getProperties()
+
   const count = properties?.length
   const active = properties?.filter((p) => p.daysLeft > 0)
   const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
