@@ -7,16 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { getTransaction } from "@/lib/google"
 
-export default function Transaction({
-  transactions,
-  n = 10,
-}: {
-  transactions: Array<Array<string>>
-  n: number
-}) {
-  const data = transactions
-    .slice(-n)
+export default async function Transaction() {
+  const transactions = await getTransaction()
+  const data = (transactions as string[][])
+    .slice(-10)
     .toReversed()
     .map((t) => ({
       date: t[0],

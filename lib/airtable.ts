@@ -8,7 +8,6 @@ Airtable.configure({
 const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getProperties = async (): Promise<Property[]> => {
-  console.log("run get property")
   try {
     const records = await base("property")
       .select({
@@ -24,7 +23,7 @@ export const getProperties = async (): Promise<Property[]> => {
         address: r.fields.address as string,
         description: r.fields.description as string,
         gMap: r.fields.g_map as string,
-        contract: r.fields.Contract as string[],
+        contract: r.fields.contract as string[],
         offTrack: r.fields.off_track as boolean,
         maxRent: r.fields.max_rent as number,
         daysLeft:
