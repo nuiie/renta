@@ -1,4 +1,20 @@
 declare global {
+  interface ImageObject {
+    id: string
+    url: string
+    filename: string
+    size: number
+    type: string
+    width: number
+    height: number
+    thumbnailsSmallUrl: string
+    thumbnailsLargeUrl: string
+    thumbnailsSmallWidth: number
+    thumbnailsSmallHeight: number
+    thumbnailsLargeWidth: number
+    thumbnailsLargeHeight: number
+  }
+
   interface Property {
     airtableId: string
     id: number
@@ -6,7 +22,7 @@ declare global {
     address?: string
     description?: string
     gMap?: string
-    //image: string[]
+    images: ImageObject[]
     contract: string[]
     offTrack: boolean
     maxRent: number

@@ -31,6 +31,7 @@ export const getProperties = async (): Promise<Property[]> => {
             ? (r.fields.days_left as number)
             : 0,
         launchDate: new Date(r.fields.launch_date as string),
+        images: r.fields.images as ImageObject[],
       })
     )
     res.sort((a, b) => a.id - b.id)
