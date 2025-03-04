@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
-// Available categories for filtering
-
-export default function ProductBrowser({
+export default function PropertyBrowser({
   properties,
 }: {
   properties: PropertyWithContract[]
@@ -36,7 +36,9 @@ export default function ProductBrowser({
       .includes(searchQuery.toLowerCase())
     const matchesPrice =
       property.maxRent >= priceRange[0] && property.maxRent <= priceRange[1]
-    const matchesAvailable = showAvailableOnly ? property.currentContract : true
+    const matchesAvailable = showAvailableOnly
+      ? !property.currentContract
+      : true
 
     return matchesSearch && matchesPrice && matchesAvailable
   })
@@ -93,12 +95,20 @@ export default function ProductBrowser({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="available-only"
+            checked={showAvailableOnly}
+            onCheckedChange={(checked) => setShowAvailableOnly(!!checked)}
+          />
+          <Label htmlFor="available-only">Show available properties only</Label>
+        </div>
       </div>
 
       {/* Results summary */}
       <div className="mt-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedProperties.length} of {properties.length} property
+          Showing {sortedProperties.length} of {properties.length} properties
         </p>
       </div>
 
