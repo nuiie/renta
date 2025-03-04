@@ -1,5 +1,5 @@
 import Airtable from "airtable"
-import { getFirstAndLastDay } from "@/lib/utils"
+import { getFirstAndLastDay, delay } from "@/lib/utils"
 
 Airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -8,12 +8,14 @@ Airtable.configure({
 const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getProperties = async (): Promise<Property[]> => {
+  console.log("fetching properties...")
   try {
     const records = await base("property")
       .select({
         filterByFormula: `{off_track}=FALSE()`,
       })
       .firstPage()
+    await delay(250) // Add delay after fetch
 
     const res = records?.map(
       (r): Property => ({
@@ -49,6 +51,7 @@ export const getPayments = async (
     dayRange?: { firstDay: string; lastDay: string }
   } = {}
 ): Promise<Payment[]> => {
+  console.log("fetching payments...")
   let filter = {}
   if (args.overdue) {
     filter = { filterByFormula: `{payment_status}='Overdue'` }
@@ -65,6 +68,8 @@ export const getPayments = async (
 
   try {
     const records = await base("payment").select(filter).firstPage()
+    await delay(250) // Add delay after fetch
+
     return records
       .map(
         (r): Payment => ({
@@ -89,9 +94,20 @@ export const getPayments = async (
   }
 }
 
-export const getContracts = async (): Promise<Contract[]> => {
+export const getContracts = async ({
+  current = false,
+}: {
+  current: boolean
+}): Promise<Contract[]> => {
+  console.log("fetching contract...")
+  let filter = {}
+  if (current) {
+    filter = { filterByFormula: `{contract_status}='Ongoing'` }
+  }
   try {
-    const records = await base("contract").select().firstPage()
+    const records = await base("contract").select(filter).firstPage()
+    await delay(250) // Add delay after fetch
+
     const res = records?.map(
       (r): Contract => ({
         airtableId: r.getId(),
@@ -120,9 +136,12 @@ export const getContracts = async (): Promise<Contract[]> => {
 export async function getRevenueChartData(
   month = 6
 ): Promise<{ month: string; revenue: number; missing: number }[]> {
+  console.log("fetching revenue data...")
   const dayRange = getFirstAndLastDay(new Date(), month)
   const payments = await getPayments({ dayRange })
+  await delay(250) // Add delay after fetch
   const properties = await getProperties()
+  await delay(250) // Add delay after fetch
 
   // Function to format month as "MMM-YY"
   const formatMonth = (date: Date): string =>
@@ -189,4 +208,25 @@ export async function getRevenueChartData(
   return output.slice(0, month)
 }
 
+export async function getPropertiesWithContract(): Promise<
+  PropertyWithContract[]
+> {
+  console.log("fetching properties with contract...")
+  const properties = await getProperties()
+  await delay(250) // Add delay after fetch
+  const currentContracts = await getContracts({ current: true })
+  await delay(250) // Add delay after fetch
+
+  const propertiesWithContract = properties.map((property) => {
+    const currentContract = currentContracts.find(
+      (contract) => contract.propertyAId === property.airtableId
+    )
+    return {
+      ...property,
+      currentContract: currentContract || null,
+    }
+  })
+
+  return propertiesWithContract
+}
 export default base

@@ -8,7 +8,7 @@ import {
 export default async function LatePayment() {
   const [payments, contracts] = await Promise.all([
     getPayments({ overdue: true }),
-    getContracts(),
+    getContracts({ current: false }),
   ])
   const filteredContract = filterContractWithOverdue(contracts, payments)
 

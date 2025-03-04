@@ -25,6 +25,7 @@ export default function Navbar() {
           const isActive = pathname === item.href
           return (
             <Link
+              prefetch={false}
               key={item.href}
               href={item.href}
               className={isActive ? "bg-black text-white px-2" : "px-2"}

@@ -1,9 +1,11 @@
 import ProductBrowser from "@/components/product-browser"
+import { getPropertiesWithContract } from "@/lib/airtable"
 
-export default function Property() {
+export default async function Property() {
+  const propertiesWithContract = await getPropertiesWithContract()
   return (
     <section className="px-6 max-w-md">
-      <ProductBrowser />
+      <ProductBrowser properties={propertiesWithContract} />
     </section>
   )
 }

@@ -91,6 +91,10 @@ declare global {
   interface ContractWithOverdue extends Contract {
     overdue: Payment[] | null
   }
+
+  interface PropertyWithContract extends Property {
+    currentContract: Contract | null
+  }
 }
 
 export default global
