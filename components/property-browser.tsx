@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { ArrowUpDown, Search, ShoppingCart } from "lucide-react"
+import { ArrowUpDown, Search } from "lucide-react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -17,13 +18,13 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { toCurrency } from "@/lib/utils"
 
 export default function PropertyBrowser({
   properties,
 }: {
   properties: PropertyWithContract[]
 }) {
-  console.log(properties)
   const [searchQuery, setSearchQuery] = useState("")
   const [priceRange, setPriceRange] = useState([0, 50000])
   const [sortOption, setSortOption] = useState("featured")
@@ -115,7 +116,10 @@ export default function PropertyBrowser({
       {/* Product grid */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2">
         {sortedProperties.map((property) => (
-          <Card key={property.airtableId} className="overflow-hidden">
+          <Card
+            key={property.airtableId}
+            className="overflow-hidden flex flex-col justify-between"
+          >
             <div className="relative">
               <Image
                 src={property.images[0].url || "/placeholder.svg"}
@@ -130,25 +134,25 @@ export default function PropertyBrowser({
                 </Badge>
               )}
             </div>
-            <CardContent className="p-2">
+            <CardContent className="p-2 flex-grow">
               <div className="space-y-1">
                 <h3 className="font-semibold">{property.nickname}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {property.currentContract?.tenant ||
-                    "Property is available for rent"}
+                <p className="text-sm text-muted-foreground truncate">
+                  {property.currentContract?.tenant || "Available for rent"}
                 </p>
               </div>
               <div className="mt-2 flex items-center justify-between">
                 <span className="font-medium">
-                  ${property.maxRent.toFixed(2)}
+                  {toCurrency(property.maxRent)}
                 </span>
               </div>
             </CardContent>
             <CardFooter className="p-2 pt-0">
-              <Button className="w-full" size="sm">
-                <ShoppingCart className="mr-1 h-3 w-3" />
-                Add
-              </Button>
+              <Link href={`/property/${property.id}`} className="w-full">
+                <Button className="w-full" size="sm">
+                  Detail
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
         ))}
