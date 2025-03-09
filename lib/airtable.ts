@@ -39,7 +39,7 @@ export const getProperties = async (): Promise<Property[]> => {
     res.sort((a, b) => a.id - b.id)
     return res
   } catch (error) {
-    console.error("Error fetching properties:", error)
+    // console.error("Error fetching properties:", error)
     throw error // Re-throw the error after logging it
   }
 }
