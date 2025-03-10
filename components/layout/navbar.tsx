@@ -7,8 +7,7 @@ const NAV_ITEMS = [
   { href: "/", label: "dashboard" },
   { href: "/property", label: "property" },
   { href: "/contract", label: "contract" },
-  { href: "/maintenance", label: "maintenance" },
-  { href: "/asset", label: "asset" },
+  { href: "/maintenance", label: "maintenance & assets" },
   {
     href: "https://airtable.com/appBNQZ6kc8ziiDRA/tbloob8vM0OlPcDTD/viweonP8cvRsaDmRB",
     label: "airtable",

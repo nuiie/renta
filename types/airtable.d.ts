@@ -95,6 +95,22 @@ declare global {
   interface PropertyWithContract extends Property {
     currentContract: Contract | null
   }
+
+  interface Maintenance {
+    airtableId: string
+    id: number
+    date: Date
+    propertyId: number
+    nickname: string
+    details: string
+    cost: number
+    repairOrAsset: RepairOrAsset
+  }
+
+  enum RepairOrAsset {
+    REPAIR = "repair",
+    ASSET = "asset",
+  }
 }
 
 export default global

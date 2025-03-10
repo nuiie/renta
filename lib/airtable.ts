@@ -229,4 +229,30 @@ export async function getPropertiesWithContract(): Promise<
 
   return propertiesWithContract
 }
+
+export async function getMaintenance(): Promise<Maintenance[]> {
+  console.log("fetching maintenance...")
+  try {
+    const records = await base("maintenance").select().firstPage()
+    await delay(250) // Add delay after fetch
+
+    const res = records?.map(
+      (r): Maintenance => ({
+        airtableId: r.getId() as string,
+        id: r.fields.id as number,
+        date: new Date(r.fields.date as string),
+        propertyId: r.fields.property_id as number,
+        nickname: r.fields.nickname as string,
+        details: r.fields.details as string,
+        cost: r.fields.cost as number,
+        repairOrAsset: r.fields.repair_or_asset as RepairOrAsset,
+      })
+    )
+    res.sort((a, b) => a.date.getTime() - b.date.getTime())
+    return res
+  } catch (error) {
+    // console.error("Error fetching maintenance:", error)
+    throw error // Re-throw the error after logging it
+  }
+}
 export default base
