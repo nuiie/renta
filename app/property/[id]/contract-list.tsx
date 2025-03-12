@@ -1,34 +1,46 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, ChevronRight } from "lucide-react"
+import { getContracts } from "@/lib/airtable"
+import { formatDateDDMMYY } from "@/lib/utils"
+import Link from "next/link"
 
-export default function ContractList() {
+export default async function ContractList({
+  contractAIds,
+}: {
+  contractAIds: string[] | null
+}) {
+  const contracts = (
+    await getContracts({
+      current: false,
+    })
+  )
+    .filter((c) => contractAIds?.includes(c.airtableId))
+    .sort((a, b) => b.endDate - a.endDate)
   // In a real app, you would fetch this data from your API
-  const contracts = [
-    {
-      id: "contract_1",
-      tenantName: "John Doe",
-      startDate: "2023-01-01",
-      endDate: "2024-01-01",
-      monthlyRent: 1500,
-      status: "Active",
-      paymentStatus: "Paid",
-      lastPaymentDate: "2023-06-01",
-    },
-    {
-      id: "contract_2",
-      tenantName: "Jane Smith",
-      startDate: "2022-01-01",
-      endDate: "2023-01-01",
-      monthlyRent: 1400,
-      status: "Expired",
-      paymentStatus: "Completed",
-      lastPaymentDate: "2023-01-01",
-    },
-  ]
+  // const contracts = [
+  //   {
+  //     id: "contract_1",
+  //     tenantName: "John Doe",
+  //     startDate: "2023-01-01",
+  //     endDate: "2024-01-01",
+  //     monthlyRent: 1500,
+  //     status: "Active",
+  //     paymentStatus: "Paid",
+  //     lastPaymentDate: "2023-06-01",
+  //   },
+  //   {
+  //     id: "contract_2",
+  //     tenantName: "Jane Smith",
+  //     startDate: "2022-01-01",
+  //     endDate: "2023-01-01",
+  //     monthlyRent: 1400,
+  //     status: "Expired",
+  //     paymentStatus: "Completed",
+  //     lastPaymentDate: "2023-01-01",
+  //   },
+  // ]
 
   return (
     <Card>
@@ -55,14 +67,16 @@ export default function ContractList() {
             {contracts.map((contract) => (
               <div key={contract.id} className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="font-medium">{contract.tenantName}</p>
+                  <p className="font-medium">{contract.tenant}</p>
                   <Badge
                     variant={
-                      contract.status === "Active" ? "default" : "secondary"
+                      contract.contractStatus == "Ongoing"
+                        ? "default"
+                        : "secondary"
                     }
                     className="text-xs"
                   >
-                    {contract.status}
+                    {contract.contractStatus}
                   </Badge>
                 </div>
 
@@ -70,40 +84,28 @@ export default function ContractList() {
                   <div>
                     <p className="text-xs text-muted-foreground">Period</p>
                     <p>
-                      {new Date(contract.startDate).toLocaleDateString()} -{" "}
-                      {new Date(contract.endDate).toLocaleDateString()}
+                      {formatDateDDMMYY(contract.startDate)} -{" "}
+                      {formatDateDDMMYY(contract.endDate)}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">
                       Monthly Rent
                     </p>
-                    <p>${contract.monthlyRent}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      Payment Status
-                    </p>
-                    <p>{contract.paymentStatus}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      Last Payment
-                    </p>
-                    <p>
-                      {new Date(contract.lastPaymentDate).toLocaleDateString()}
-                    </p>
+                    <p>${contract.rent}</p>
                   </div>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-between"
-                >
-                  View Details
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+                <Link href={`/contract/${contract.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-between"
+                  >
+                    View Details
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             ))}
           </div>
