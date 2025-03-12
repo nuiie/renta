@@ -81,7 +81,9 @@ export const getPayments = async (
           due: new Date(r.fields.due as string),
           paymentNumber: r.fields.payment_number as number,
           paymentStatus: r.fields.payment_status as PaymentStatus,
-          paidDate: new Date(r.fields.paid_date as string),
+          paidDate: r.fields.paid_date
+            ? new Date(r.fields.paid_date as string)
+            : null,
           paidAmount: r.fields.paid_amount as number,
           bank: r.fields.bank as BankAccount,
           desc: r.fields.desc as string,

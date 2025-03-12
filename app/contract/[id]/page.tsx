@@ -3,9 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ChevronLeft, CalendarIcon, DollarSign, Clock } from "lucide-react"
+import { getPayments } from "@/lib/airtable"
+import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
 
-export default function ContractPage({ params }: { params: { id: string } }) {
-  const contractId = params.id
+export default async function ContractPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const payments = await getPayments({ contractId: await params.id })
 
   return (
     <div className="px-6 space-y-6 max-w-md">
@@ -16,7 +22,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
             Back
           </Button>
         </Link>
-        <h1 className="text-xl font-bold">Contract {contractId}</h1>
+        <h1 className="text-xl font-bold">Contract {params.id}</h1>
       </div>
 
       <Card>
@@ -99,45 +105,34 @@ export default function ContractPage({ params }: { params: { id: string } }) {
           <CardTitle className="text-lg">Payment History</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {[
-            {
-              date: "Jan 1, 2023",
-              amount: 1500,
-              status: "Paid",
-              paidDate: "Jan 1, 2023",
-            },
-            {
-              date: "Feb 1, 2023",
-              amount: 1500,
-              status: "Paid",
-              paidDate: "Feb 1, 2023",
-            },
-            {
-              date: "Mar 1, 2023",
-              amount: 1500,
-              status: "Paid",
-              paidDate: "Mar 1, 2023",
-            },
-          ].map((payment, index) => (
+          {payments.map((payment, index) => (
             <div
               key={index}
               className="flex justify-between items-center text-sm"
             >
               <div>
                 <p>
-                  <strong>Due:</strong> {payment.date}
+                  <strong>Due:</strong> {formatDateDDMMYY(payment.due)}
                 </p>
                 <p>
-                  <strong>Amount:</strong> ${payment.amount}
+                  <strong>Amount:</strong> {toCurrency(payment.amountToBePaid)}
                 </p>
               </div>
               <div className="text-right">
                 <Badge
-                  variant={payment.status === "Paid" ? "default" : "secondary"}
+                  variant={
+                    payment.paymentStatus === "Paid"
+                      ? "default"
+                      : payment.paymentStatus === "Overdue"
+                      ? "destructive"
+                      : "secondary"
+                  }
                 >
-                  {payment.status}
+                  {payment.paymentStatus}
                 </Badge>
-                <p className="text-xs mt-1">{payment.paidDate}</p>
+                <p className="text-xs mt-1">
+                  {!!payment.paidDate && formatDateDDMMYY(payment.paidDate)}
+                </p>
               </div>
             </div>
           ))}

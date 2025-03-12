@@ -82,7 +82,7 @@ declare global {
     due: Date
     paymentNumber: number
     paymentStatus: PaymentStatus
-    paidDate: Date
+    paidDate: Date | null
     paidAmount: number
     bank: BankAccount
     desc: string
