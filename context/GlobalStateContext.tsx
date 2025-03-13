@@ -2,8 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react"
 
-interface GlobalState {
+interface AirtableData {
   properties: PropertyWithContract[]
+  contracts: Contract[]
+  payments: Payment[]
+}
+
+interface GlobalState {
+  airtableData: AirtableData | null
   loading: boolean
 }
 
@@ -12,20 +18,20 @@ const GlobalStateContext = createContext<GlobalState | undefined>(undefined)
 export const GlobalStateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [properties, setProperties] = useState<PropertyWithContract[]>([])
+  const [airtableData, setAirtableData] = useState<AirtableData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/api/properties")
+        const response = await fetch("/api/airtable")
         if (!response.ok) {
           throw new Error("Network response was not ok")
         }
         const data = await response.json()
-        setProperties(data)
+        setAirtableData(data)
       } catch (error) {
-        console.error("Failed to fetch properties:", error)
+        console.error("Failed to fetch airtable data:", error)
       } finally {
         setLoading(false)
       }
@@ -35,7 +41,7 @@ export const GlobalStateProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [])
 
   return (
-    <GlobalStateContext.Provider value={{ properties, loading }}>
+    <GlobalStateContext.Provider value={{ airtableData, loading }}>
       {children}
     </GlobalStateContext.Provider>
   )
