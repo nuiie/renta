@@ -7,12 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
+import { useData } from "@/context/DataContext"
 
-export default function ContractBrowser({
-  contracts,
-}: {
-  contracts: Contract[]
-}) {
+export default function ContractBrowser() {
+  const { contracts } = useData()
   const [showOngoingOnly, setShowOngoingOnly] = useState(false)
   const filteredContracts = contracts.filter((contract) => {
     return showOngoingOnly ? contract.contractStatus == "Ongoing" : true

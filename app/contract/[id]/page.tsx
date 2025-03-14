@@ -16,7 +16,7 @@ export default async function ContractPage({
   return (
     <div className="px-6 space-y-6 max-w-md">
       <div className="flex items-center gap-2 mb-4">
-        <Link href="/contracts">
+        <Link href="/contract">
           <Button variant="ghost" size="sm">
             <ChevronLeft className="h-4 w-4 mr-1" />
             Back

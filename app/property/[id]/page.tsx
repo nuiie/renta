@@ -1,5 +1,7 @@
+"use client"
 // import { useGlobalState } from "@/context/GlobalStateContext"
-import { getPropertiesWithContract } from "@/lib/airtable"
+// import { getPropertiesWithContract } from "@/lib/airtable"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -22,36 +24,14 @@ import {
 } from "lucide-react"
 import PropertyCarousel from "./property-carousel"
 import ContractList from "./contract-list"
+import { useData } from "@/context/DataContext"
 
-export default async function PropertyDetail({
-  params,
-}: {
-  params: { id: string }
-}) {
-  // { params }: { params: { id: string } }) {
-  // const { properties, loading } = useGlobalState()
-  // const property = properties.find((p) => p.id === parseInt(params.id))
-
-  // const property = {
-  //   id: "prop_123",
-  //   title: "Luxury Apartment in Downtown",
-  //   address: "123 Main Street, Downtown, City 12345",
-  //   status: "Occupied",
-  //   bedrooms: 2,
-  //   bathrooms: 2,
-  //   price: 1500,
-  //   description:
-  //     "Modern luxury apartment in the heart of downtown with amazing city views. Features include high ceilings, hardwood floors, and a fully equipped kitchen with stainless steel appliances.",
-  //   images: [
-  //     "/placeholder.svg?height=600&width=800",
-  //     "/placeholder.svg?height=600&width=800",
-  //     "/placeholder.svg?height=600&width=800",
-  //   ],
-  // }
-
-  const property = (await getPropertiesWithContract()).find(
-    (p) => p.id === parseInt(params.id)
-  )
+export default function PropertyDetail({ params }: { params: { id: string } }) {
+  const { properties } = useData()
+  const property = properties.find((p) => p.id === parseInt(params.id))
+  // const property = (await getPropertiesWithContract()).find(
+  //   (p) => p.id === parseInt(params.id)
+  // )
 
   // if (loading) {
   //   return <div>loading...</div>

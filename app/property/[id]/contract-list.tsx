@@ -1,46 +1,28 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, ChevronRight } from "lucide-react"
-import { getContracts } from "@/lib/airtable"
+// import { getContracts } from "@/lib/airtable"
+import { useData } from "@/context/DataContext"
 import { formatDateDDMMYY } from "@/lib/utils"
 import Link from "next/link"
 
-export default async function ContractList({
+export default function ContractList({
   contractAIds,
 }: {
   contractAIds: string[] | null
 }) {
-  const contracts = (
-    await getContracts({
-      current: false,
-    })
-  )
-    .filter((c) => contractAIds?.includes(c.airtableId))
+  const contracts = useData()
+    .contracts.filter((c) => contractAIds?.includes(c.airtableId))
     .sort((a, b) => b.endDate - a.endDate)
-  // In a real app, you would fetch this data from your API
-  // const contracts = [
-  //   {
-  //     id: "contract_1",
-  //     tenantName: "John Doe",
-  //     startDate: "2023-01-01",
-  //     endDate: "2024-01-01",
-  //     monthlyRent: 1500,
-  //     status: "Active",
-  //     paymentStatus: "Paid",
-  //     lastPaymentDate: "2023-06-01",
-  //   },
-  //   {
-  //     id: "contract_2",
-  //     tenantName: "Jane Smith",
-  //     startDate: "2022-01-01",
-  //     endDate: "2023-01-01",
-  //     monthlyRent: 1400,
-  //     status: "Expired",
-  //     paymentStatus: "Completed",
-  //     lastPaymentDate: "2023-01-01",
-  //   },
-  // ]
+  // const contracts = (
+  //   await getContracts({
+  //     current: false,
+  //   })
+  // )
+  //   .filter((c) => contractAIds?.includes(c.airtableId))
+  //   .sort((a, b) => b.endDate - a.endDate)
 
   return (
     <Card>

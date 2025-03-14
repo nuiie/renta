@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import Footer from "@/components/layout/footer"
 import Navbar from "@/components/layout/navbar"
-import { GlobalStateProvider } from "@/context/GlobalStateContext"
+// import { GlobalStateProvider } from "@/context/GlobalStateContext"
+import { DataProvider } from "@/context/DataContext"
+import { getProperties, getPayments, getContracts } from "@/lib/airtable"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,20 +22,42 @@ export const metadata: Metadata = {
   description: "minimal rental management system",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const initialData = await fetchAirtableData()
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
-        <GlobalStateProvider>{children}</GlobalStateProvider>
+        {/* <GlobalStateProvider>{children}</GlobalStateProvider> */}
+        <DataProvider initialData={initialData}>{children}</DataProvider>
         <Footer />
       </body>
     </html>
   )
+}
+
+async function fetchAirtableData() {
+  const [properties, contracts, payments] = await Promise.all([
+    getProperties(),
+    getContracts({ current: false }),
+    getPayments(),
+  ])
+
+  const propertiesWithContract = properties.map((property) => {
+    const currentContract = contracts
+      .filter((c) => c.contractStatus == "Ongoing")
+      .find((contract) => contract.propertyAId === property.airtableId)
+    return {
+      ...property,
+      currentContract: currentContract || null,
+    }
+  })
+
+  return { contracts, payments, properties: propertiesWithContract }
 }

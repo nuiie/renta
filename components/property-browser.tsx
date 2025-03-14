@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useData } from "@/context/DataContext"
 import Image from "next/image"
 import { ArrowUpDown, Search } from "lucide-react"
 import Link from "next/link"
@@ -20,18 +21,17 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { toCurrency } from "@/lib/utils"
 
-export default function PropertyBrowser({
-  properties,
-}: {
-  properties: PropertyWithContract[]
-}) {
+export default function PropertyBrowser() {
+  const { properties } = useData()
+
   const [searchQuery, setSearchQuery] = useState("")
   const [priceRange, setPriceRange] = useState([0, 50000])
   const [sortOption, setSortOption] = useState("featured")
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
 
-  // Filter products based on search, category, price range, and available status
-  const filteredProducts = properties.filter((property) => {
+  if (!properties) return <div>browser Loading...</div>
+  // Filter properties based on search, price range, and available status
+  const filteredProperties = properties.filter((property) => {
     const matchesSearch = property.nickname
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
@@ -44,8 +44,8 @@ export default function PropertyBrowser({
     return matchesSearch && matchesPrice && matchesAvailable
   })
 
-  // Sort products based on selected option
-  const sortedProperties = [...filteredProducts].sort((a, b) => {
+  // Sort properties based on selected option
+  const sortedProperties = [...filteredProperties].sort((a, b) => {
     switch (sortOption) {
       case "price-low":
         return a.maxRent - b.maxRent
@@ -113,7 +113,7 @@ export default function PropertyBrowser({
         </p>
       </div>
 
-      {/* Product grid */}
+      {/* Property grid */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2">
         {sortedProperties.map((property) => (
           <Card
