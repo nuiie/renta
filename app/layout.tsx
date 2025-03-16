@@ -24,7 +24,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const initialData = await fetchAirtableData()
   return (
     <html lang="en">
       <body
@@ -36,24 +35,4 @@ export default async function RootLayout({
       </body>
     </html>
   )
-}
-
-async function fetchAirtableData() {
-  const [properties, contracts, payments] = await Promise.all([
-    getProperties(),
-    getContracts({ current: false }),
-    getPayments(),
-  ])
-
-  const propertiesWithContract = properties.map((property) => {
-    const currentContract = contracts
-      .filter((c) => c.contractStatus == "Ongoing")
-      .find((contract) => contract.propertyAId === property.airtableId)
-    return {
-      ...property,
-      currentContract: currentContract || null,
-    }
-  })
-
-  return { contracts, payments, properties: propertiesWithContract }
 }

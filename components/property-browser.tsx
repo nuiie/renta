@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useData } from "@/context/DataContext"
 import Image from "next/image"
 import { ArrowUpDown, Search } from "lucide-react"
 import Link from "next/link"

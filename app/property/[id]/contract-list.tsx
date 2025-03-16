@@ -1,20 +1,18 @@
-"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, ChevronRight } from "lucide-react"
-// import { getContracts } from "@/lib/airtable"
-import { useData } from "@/context/DataContext"
+import { getContracts } from "@/lib/airtable"
 import { formatDateDDMMYY } from "@/lib/utils"
 import Link from "next/link"
 
-export default function ContractList({
+export default async function ContractList({
   contractAIds,
 }: {
   contractAIds: string[] | null
 }) {
-  const contracts = useData()
-    .contracts.filter((c) => contractAIds?.includes(c.airtableId))
+  const contracts = (await getContracts({ current: false }))
+    .filter((c) => contractAIds?.includes(c.airtableId))
     .sort((a, b) => b.endDate - a.endDate)
 
   return (
