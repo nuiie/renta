@@ -21,9 +21,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { toCurrency } from "@/lib/utils"
 
-export default function PropertyBrowser() {
-  const { properties } = useData()
-
+export default function PropertyBrowser({
+  properties,
+}: {
+  properties: Property[]
+}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [priceRange, setPriceRange] = useState([0, 50000])
   const [sortOption, setSortOption] = useState("featured")
@@ -38,7 +40,7 @@ export default function PropertyBrowser() {
     const matchesPrice =
       property.maxRent >= priceRange[0] && property.maxRent <= priceRange[1]
     const matchesAvailable = showAvailableOnly
-      ? !property.currentContract
+      ? !property.currentContractId
       : true
 
     return matchesSearch && matchesPrice && matchesAvailable
@@ -128,7 +130,7 @@ export default function PropertyBrowser() {
                 height={300}
                 className="h-[120px] w-full object-cover"
               />
-              {!property.currentContract && (
+              {!property.currentContractId && (
                 <Badge className="absolute right-2 top-2 bg-red-500 hover:bg-red-600">
                   Available
                 </Badge>
@@ -138,7 +140,8 @@ export default function PropertyBrowser() {
               <div className="space-y-1">
                 <h3 className="font-semibold">{property.nickname}</h3>
                 <p className="text-sm text-muted-foreground truncate">
-                  {property.currentContract?.tenant || "Available for rent"}
+                  {`contract id: ${property.currentContractId}` ||
+                    "Available for rent"}
                 </p>
               </div>
               <div className="mt-2 flex items-center justify-between">

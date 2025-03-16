@@ -16,13 +16,6 @@ export default function ContractList({
   const contracts = useData()
     .contracts.filter((c) => contractAIds?.includes(c.airtableId))
     .sort((a, b) => b.endDate - a.endDate)
-  // const contracts = (
-  //   await getContracts({
-  //     current: false,
-  //   })
-  // )
-  //   .filter((c) => contractAIds?.includes(c.airtableId))
-  //   .sort((a, b) => b.endDate - a.endDate)
 
   return (
     <Card>

@@ -28,6 +28,7 @@ declare global {
     maxRent: number
     daysLeft: number
     launchDate: date
+    currentContractId?: number
   }
 
   enum ContractStatus {

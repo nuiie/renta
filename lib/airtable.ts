@@ -1,6 +1,7 @@
 import Airtable from "airtable"
 import { getFirstAndLastDay, delay } from "@/lib/utils"
 
+// airtable limit 5 fetch/second, 100 records/fetch
 Airtable.configure({
   endpointUrl: "https://api.airtable.com",
   apiKey: process.env.AIRTABLE_API_KEY,
@@ -34,12 +35,52 @@ export const getProperties = async (): Promise<Property[]> => {
             : 0,
         launchDate: new Date(r.fields.launch_date as string),
         images: r.fields.images as ImageObject[],
+        currentContractId: (r.fields.current_contract as number) ?? null,
       })
     )
     res.sort((a, b) => a.id - b.id)
     return res
   } catch (error) {
-    // console.error("Error fetching properties:", error)
+    console.error("Error fetching properties:", error)
+    throw error // Re-throw the error after logging it
+  }
+}
+
+export const getContracts = async ({
+  current = false,
+}: {
+  current: boolean
+}): Promise<Contract[]> => {
+  console.log("fetching contract...")
+  let filter = {}
+  if (current) {
+    filter = { filterByFormula: `{contract_status}='Ongoing'` }
+  }
+  try {
+    const records = await base("contract").select(filter).firstPage()
+    await delay(250) // Add delay after fetch
+
+    const res = records?.map(
+      (r): Contract => ({
+        airtableId: r.getId(),
+        id: r.fields.id as number,
+        propertyAId: (<string[]>r.fields.property)?.[0],
+        nickname: r.fields.nickname as string,
+        tenant: r.fields.tenant as string,
+        contractStatus: r.fields.contract_status as ContractStatus,
+        startDate: new Date(r.fields.start_date as string),
+        duration: r.fields.duration as number,
+        endDate: new Date(r.fields.end_date as string),
+        rent: r.fields.rent as number,
+        commonFee: r.fields.common_fee as number,
+        tax: (r.fields["5%"] as boolean) ?? false,
+        paymentAId: (r.fields.payment as string[]) ?? [],
+      })
+    )
+    res.sort((a, b) => a.id - b.id)
+    return res
+  } catch (error) {
+    console.error("Error fetching contracts:", error)
     throw error // Re-throw the error after logging it
   }
 }
@@ -47,7 +88,7 @@ export const getProperties = async (): Promise<Property[]> => {
 export const getPayments = async (
   args: {
     overdue?: boolean
-    contractId?: string
+    contractId?: number
     dayRange?: { firstDay: string; lastDay: string }
   } = {}
 ): Promise<Payment[]> => {
@@ -92,45 +133,6 @@ export const getPayments = async (
       .sort((a, b) => a.paymentNumber - b.paymentNumber)
   } catch (error) {
     console.error("Error fetching payments:", error)
-    throw error // Re-throw the error after logging it
-  }
-}
-
-export const getContracts = async ({
-  current = false,
-}: {
-  current: boolean
-}): Promise<Contract[]> => {
-  console.log("fetching contract...")
-  let filter = {}
-  if (current) {
-    filter = { filterByFormula: `{contract_status}='Ongoing'` }
-  }
-  try {
-    const records = await base("contract").select(filter).firstPage()
-    await delay(250) // Add delay after fetch
-
-    const res = records?.map(
-      (r): Contract => ({
-        airtableId: r.getId(),
-        id: r.fields.id as number,
-        propertyAId: (<string[]>r.fields.property)?.[0],
-        nickname: r.fields.nickname as string,
-        tenant: r.fields.tenant as string,
-        contractStatus: r.fields.contract_status as ContractStatus,
-        startDate: new Date(r.fields.start_date as string),
-        duration: r.fields.duration as number,
-        endDate: new Date(r.fields.end_date as string),
-        rent: r.fields.rent as number,
-        commonFee: r.fields.common_fee as number,
-        tax: (r.fields["5%"] as boolean) ?? false,
-        paymentAId: (r.fields.payment as string[]) ?? [],
-      })
-    )
-    res.sort((a, b) => a.id - b.id)
-    return res
-  } catch (error) {
-    console.error("Error fetching contracts:", error)
     throw error // Re-throw the error after logging it
   }
 }
@@ -208,28 +210,6 @@ export async function getRevenueChartData(
           new Date(`01-${a.month}`).getTime()
       )
   return output.slice(0, month)
-}
-
-export async function getPropertiesWithContract(): Promise<
-  PropertyWithContract[]
-> {
-  console.log("fetching properties with contract...")
-  const properties = await getProperties()
-  await delay(250) // Add delay after fetch
-  const currentContracts = await getContracts({ current: true })
-  await delay(250) // Add delay after fetch
-
-  const propertiesWithContract = properties.map((property) => {
-    const currentContract = currentContracts.find(
-      (contract) => contract.propertyAId === property.airtableId
-    )
-    return {
-      ...property,
-      currentContract: currentContract || null,
-    }
-  })
-
-  return propertiesWithContract
 }
 
 export async function getMaintenance(): Promise<Maintenance[]> {

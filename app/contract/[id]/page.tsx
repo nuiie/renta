@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ChevronLeft, CalendarIcon, DollarSign, Clock } from "lucide-react"
 import { getPayments } from "@/lib/airtable"
-import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
+import PaymentHistory from "@/components/PaymentHistory"
 
 export default async function ContractPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const payments = await getPayments({ contractId: await params.id })
+  const { id } = await params
+  const payments = await getPayments({ contractId: parseInt(id) })
 
   return (
     <div className="px-6 space-y-6 max-w-md">
@@ -22,7 +22,7 @@ export default async function ContractPage({
             Back
           </Button>
         </Link>
-        <h1 className="text-xl font-bold">Contract {params.id}</h1>
+        <h1 className="text-xl font-bold">Contract {id}</h1>
       </div>
 
       <Card>
@@ -100,44 +100,7 @@ export default async function ContractPage({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Payment History</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {payments.map((payment, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center text-sm"
-            >
-              <div>
-                <p>
-                  <strong>Due:</strong> {formatDateDDMMYY(payment.due)}
-                </p>
-                <p>
-                  <strong>Amount:</strong> {toCurrency(payment.amountToBePaid)}
-                </p>
-              </div>
-              <div className="text-right">
-                <Badge
-                  variant={
-                    payment.paymentStatus === "Paid"
-                      ? "default"
-                      : payment.paymentStatus === "Overdue"
-                      ? "destructive"
-                      : "secondary"
-                  }
-                >
-                  {payment.paymentStatus}
-                </Badge>
-                <p className="text-xs mt-1">
-                  {!!payment.paidDate && formatDateDDMMYY(payment.paidDate)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <PaymentHistory payments={payments} />
 
       <div className="flex gap-2">
         <Button className="flex-1">Edit Contract</Button>

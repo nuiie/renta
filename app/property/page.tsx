@@ -1,9 +1,12 @@
 import PropertyBrowser from "@/components/property-browser"
+import { getProperties } from "@/lib/airtable"
 
-export default function Property() {
+export default async function Property() {
+  const properties = await getProperties()
+
   return (
     <section className="px-6 max-w-md">
-      <PropertyBrowser />
+      <PropertyBrowser properties={properties} />
     </section>
   )
 }

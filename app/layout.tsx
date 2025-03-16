@@ -3,9 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import Footer from "@/components/layout/footer"
 import Navbar from "@/components/layout/navbar"
-// import { GlobalStateProvider } from "@/context/GlobalStateContext"
-import { DataProvider } from "@/context/DataContext"
-import { getProperties, getPayments, getContracts } from "@/lib/airtable"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +31,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
-        {/* <GlobalStateProvider>{children}</GlobalStateProvider> */}
-        <DataProvider initialData={initialData}>{children}</DataProvider>
+        {children}
         <Footer />
       </body>
     </html>

@@ -1,7 +1,4 @@
-"use client"
-// import { useGlobalState } from "@/context/GlobalStateContext"
-// import { getPropertiesWithContract } from "@/lib/airtable"
-import * as React from "react"
+import { getProperties } from "@/lib/airtable"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -24,18 +21,15 @@ import {
 } from "lucide-react"
 import PropertyCarousel from "./property-carousel"
 import ContractList from "./contract-list"
-import { useData } from "@/context/DataContext"
+import PaymentDetail from "./PaymentDetail"
 
-export default function PropertyDetail({ params }: { params: { id: string } }) {
-  const { properties } = useData()
-  const property = properties.find((p) => p.id === parseInt(params.id))
-  // const property = (await getPropertiesWithContract()).find(
-  //   (p) => p.id === parseInt(params.id)
-  // )
-
-  // if (loading) {
-  //   return <div>loading...</div>
-  // }
+export default async function PropertyDetail({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const property = (await getProperties()).find((p) => p.id === parseInt(id))
 
   if (!property) {
     return <div>property not found</div>
@@ -84,10 +78,8 @@ export default function PropertyDetail({ params }: { params: { id: string } }) {
           </div>
           <p className="text-sm text-muted-foreground">{property.address}</p>
         </div>
-
         {/* Property Carousel */}
         <PropertyCarousel images={property.images.map((i) => i.url)} />
-
         {/* Rent and Status Card */}
         <Card>
           <CardHeader className="pb-2">
@@ -109,17 +101,16 @@ export default function PropertyDetail({ params }: { params: { id: string } }) {
                 <div>
                   <p className="text-sm font-medium leading-none">Status</p>
                   <Badge
-                    variant={property.currentContract ? "default" : "outline"}
+                    variant={property.currentContractId ? "default" : "outline"}
                     className="mt-1"
                   >
-                    {property.currentContract ? "Occupied" : "Available"}
+                    {property.currentContractId ? "Occupied" : "Available"}
                   </Badge>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
-
         {/* Property Description */}
         <Card>
           <CardHeader className="pb-2">
@@ -131,15 +122,11 @@ export default function PropertyDetail({ params }: { params: { id: string } }) {
             </p>
           </CardContent>
         </Card>
-
-        {/* Contract List */}
         <ContractList contractAIds={property.contract} />
+        {property.currentContractId && (
+          <PaymentDetail contractId={property.currentContractId} />
+        )}
       </div>
-      {/* property details {property.nickname}
-      <p>header, nickname, button for edit, menu</p>
-      <p>Carousel</p>
-      <p>property table form</p>
-      <p>contract list</p> */}
     </section>
   )
 }
