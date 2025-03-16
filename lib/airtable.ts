@@ -1,3 +1,5 @@
+"use cache"
+
 import Airtable from "airtable"
 import { getFirstAndLastDay, delay } from "@/lib/utils"
 
@@ -9,7 +11,7 @@ Airtable.configure({
 const base = Airtable.base("appBNQZ6kc8ziiDRA")
 
 export const getProperties = async (): Promise<Property[]> => {
-  console.log("fetching properties...")
+  console.log(`fetching properties...`)
   try {
     const records = await base("property")
       .select({
@@ -51,7 +53,7 @@ export const getContracts = async ({
 }: {
   current: boolean
 }): Promise<Contract[]> => {
-  console.log("fetching contract...")
+  console.log(`fetching contracts current: ${current}...`)
   let filter = {}
   if (current) {
     filter = { filterByFormula: `{contract_status}='Ongoing'` }
@@ -92,7 +94,7 @@ export const getPayments = async (
     dayRange?: { firstDay: string; lastDay: string }
   } = {}
 ): Promise<Payment[]> => {
-  console.log("fetching payments...")
+  console.log(`fetching payments args: ${JSON.stringify(args)}...`)
   let filter = {}
   if (args.overdue) {
     filter = { filterByFormula: `{payment_status}='Overdue'` }
