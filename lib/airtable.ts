@@ -239,4 +239,12 @@ export async function getMaintenance(): Promise<Maintenance[]> {
     throw error // Re-throw the error after logging it
   }
 }
+
+// update payment function
+// 1. find out which payment a transaction belongs to
+// 2. update the payment record with the transaction details
+// 3. mark transaction as follows
+//    - if transaction is succesfully updated, mark as 1
+//    - if unable to map transaction to payment, mark as 2
+//    - if unable to update payment, leave mark empty
 export default base
