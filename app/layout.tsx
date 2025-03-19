@@ -1,37 +1,34 @@
+import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
-import Footer from "@/components/layout/footer"
-import Navbar from "@/components/layout/navbar"
+import { Navigation } from "@/components/navigation"
+import { ThemeProvider } from "@/components/theme-provider"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "renta",
-  description: "minimal rental management system",
+  title: "Renta - Property Management",
+  description: "Mobile property rental management system",
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar />
-        {children}
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-gray-50 dark:bg-gray-950`}>
+        <ThemeProvider attribute="class" defaultTheme="light">
+          <div className="mx-auto max-w-md min-h-screen flex flex-col">
+            <Navigation />
+            <main className="flex-1 p-4">{children}</main>
+            <footer className="text-xs text-center p-2 text-gray-500 border-t">
+              Last updated: {new Date().toLocaleDateString("th-TH")}
+            </footer>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

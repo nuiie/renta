@@ -1,0 +1,184 @@
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight } from "lucide-react"
+
+export default function Dashboard() {
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-medium">
+            Property Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <p className="text-gray-500">Active Properties</p>
+              <p className="font-medium">14</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Total Rent</p>
+              <p className="font-medium">฿163,671.06</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Inactive Properties</p>
+              <p className="font-medium">3</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Late Payments</p>
+              <p className="font-medium text-red-500">7</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <CardTitle className="text-base font-medium">
+            Revenue Performance
+          </CardTitle>
+          <Link
+            href="/revenue"
+            className="text-xs text-blue-600 flex items-center"
+          >
+            View Details <ArrowRight className="h-3 w-3 ml-1" />
+          </Link>
+        </CardHeader>
+        <CardContent className="text-sm">
+          <div className="grid grid-cols-2 gap-y-2">
+            <p className="text-gray-500">Current Month</p>
+            <p className="text-right font-medium">Mar 2025</p>
+
+            <p className="text-gray-500">Expected</p>
+            <p className="text-right">฿163,671.06</p>
+
+            <p className="text-gray-500">Collected</p>
+            <p className="text-right">฿142,231.06</p>
+
+            <p className="text-gray-500">Collection Rate</p>
+            <div className="flex items-center justify-end gap-1">
+              <p className="font-medium">87%</p>
+              <Badge variant="outline" className="text-xs text-red-500">
+                ↓ 3%
+              </Badge>
+            </div>
+
+            <p className="text-gray-500">Last Month</p>
+            <div className="flex items-center justify-end gap-1">
+              <p>90%</p>
+              <Badge variant="outline" className="text-xs text-green-500">
+                ↑ 2%
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-medium">Late Payments</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y text-sm">
+            {[
+              {
+                property: "71/53 พฤกษา (ลูกค้า)",
+                amount: "฿6,940.00",
+                days: 18,
+                due: "01/03/2025",
+              },
+              {
+                property: "181/26 ติดเขา",
+                amount: "฿11,000.00",
+                days: 138,
+                due: "01/11/2024",
+              },
+              {
+                property: "181/26 ติดเขา",
+                amount: "฿11,000.00",
+                days: 108,
+                due: "01/12/2024",
+              },
+            ].map((payment, i) => (
+              <div key={i} className="p-3 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">{payment.property}</p>
+                  <p className="text-gray-500 text-xs">Due: {payment.due}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium">{payment.amount}</p>
+                  <Badge variant="destructive" className="text-xs">
+                    {payment.days} days late
+                  </Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/payments"
+            className="block text-center p-2 text-sm text-blue-600 hover:underline"
+          >
+            View all late payments
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-medium">
+            Recent Transactions
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y text-sm">
+            {[
+              {
+                date: "17/03/2025",
+                method: "โอนเงิน",
+                amount: "฿32,000.00",
+                from: "จาก X249",
+              },
+              {
+                date: "15/03/25",
+                method: "โอนเงิน",
+                amount: "฿12,000.00",
+                from: "จาก X967",
+              },
+              {
+                date: "14/03/25",
+                method: "โอนเงิน",
+                amount: "฿5,440.00",
+                from: "จาก X822",
+              },
+              {
+                date: "10/03/25",
+                method: "โอนเงิน",
+                amount: "฿12,000.00",
+                from: "จาก BBL",
+              },
+            ].map((transaction, i) => (
+              <div key={i} className="p-3 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">{transaction.date}</p>
+                  <p className="text-gray-500 text-xs">{transaction.method}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium">{transaction.amount}</p>
+                  <p className="text-gray-500 text-xs">{transaction.from}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/transactions"
+            className="block text-center p-2 text-sm text-blue-600 hover:underline"
+          >
+            View all transactions
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
