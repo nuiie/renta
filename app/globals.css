@@ -59,3 +59,11 @@
     scrollbar-width: none;
   }
 }
+
+/* Remove default details marker */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}

@@ -8,7 +8,7 @@ export function Navigation() {
   const pathname = usePathname()
 
   const links = [
-    { name: "Dashboard", href: "/" },
+    { name: "Dashboard", href: "/dashboard" },
     { name: "Properties", href: "/properties" },
     { name: "Contracts", href: "/contracts" },
     { name: "Maintenance", href: "/maintenance" },
