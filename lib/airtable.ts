@@ -247,4 +247,42 @@ export async function getMaintenance(): Promise<Maintenance[]> {
 //    - if transaction is succesfully updated, mark as 1
 //    - if unable to map transaction to payment, mark as 2
 //    - if unable to update payment, leave mark empty
+// export async function updatePayment(
+//   transaction: Transaction
+// ): Promise<Payment | null> {
+//   console.log("updating payment...")
+//   try {
+//     const payments = await getPayments({
+//       overdue: true,
+//       contractId: transaction.contractId,
+//     })
+//     await delay(250) // Add delay after fetch
+
+//     const payment = payments.find(
+//       (p) => p.paymentNumber === transaction.paymentNumber
+//     )
+//     if (!payment) {
+//       console.log("Unable to find payment")
+//       return null
+//     }
+
+//     const updatedPayment = await base("payment").update([
+//       {
+//         id: payment.airtableId,
+//         fields: {
+//           paid_date: new Date(transaction.date),
+//           paid_amount: transaction.amount,
+//           payment_status: "Paid",
+//           bank: transaction.bank,
+//           desc: transaction.desc,
+//         },
+//       },
+//     ])
+//     return updatedPayment[0]
+//   } catch (error) {
+//     console.error("Error updating payment:", error)
+//     throw error // Re-throw the error after logging it
+//   }
+// }
+
 export default base
