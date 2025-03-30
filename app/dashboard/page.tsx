@@ -2,37 +2,15 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight } from "lucide-react"
+import { getProperties } from "@/lib/airtable"
+import { Suspense } from "react"
 
-export default function Dashboard() {
+export default async function Dashboard() {
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium">
-            Property Summary
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <p className="text-gray-500">Active Properties</p>
-              <p className="font-medium">14</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Total Rent</p>
-              <p className="font-medium">฿163,671.06</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Inactive Properties</p>
-              <p className="font-medium">3</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Late Payments</p>
-              <p className="font-medium text-red-500">7</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Property />
+      </Suspense>
 
       <Card>
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -180,5 +158,51 @@ export default function Dashboard() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+async function Property() {
+  const properties = await getProperties()
+  console.log(properties, properties.length)
+  const active = properties?.filter((p) => p.daysLeft > 0)
+  const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
+  const activeCount = active?.length
+
+  const inactive = properties?.filter((p) => p.daysLeft <= 0)
+  const inactiveSum = inactive?.reduce((acc, curr) => acc + curr.maxRent, 0)
+  const inactiveCount = inactive?.length
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-medium">
+          Property Summary
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="text-sm">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <p className="text-gray-500">Active Properties</p>
+            <p className="font-medium">{activeCount}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Total Rent</p>
+            <p className="font-medium">฿{activeSum}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Inactive Properties</p>
+            <p className="font-medium">{inactiveCount}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Inactive Rent</p>
+            <p className="font-medium text-red-500">{inactiveSum}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Late Payments</p>
+            <p className="font-medium text-red-500">7</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
