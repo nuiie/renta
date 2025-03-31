@@ -1,5 +1,3 @@
-"use cache"
-
 import Airtable from "airtable"
 import { getFirstAndLastDay, delay } from "@/lib/utils"
 

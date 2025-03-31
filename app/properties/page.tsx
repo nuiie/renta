@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Search, SortDesc } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 export default function Properties() {
   return (
@@ -60,7 +61,7 @@ export default function Properties() {
           <Card key={property.id} className="overflow-hidden">
             <CardContent className="p-0">
               <div className="p-3">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start mb-2">
                   <div>
                     <h3 className="font-medium">
                       {property.id} {property.name}
@@ -71,13 +72,12 @@ export default function Properties() {
                   </div>
                   <p className="font-medium">{property.rent}</p>
                 </div>
+                <Link href={`/properties/${property.id}`}>
+                  <Button variant="link" size="sm" className="px-0 h-auto">
+                    View Details <ChevronRight className="h-3 w-3 ml-1" />
+                  </Button>
+                </Link>
               </div>
-              <Link
-                href={`/properties/${property.id}`}
-                className="block w-full bg-gray-900 text-white text-center p-2 text-sm hover:bg-gray-800 transition-colors"
-              >
-                Detail
-              </Link>
             </CardContent>
           </Card>
         ))}
