@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus } from "lucide-react"
+import { Plus, Loader2 } from "lucide-react"
 
 // Mock data for demonstration
 const contractData = [
@@ -48,13 +48,14 @@ const contractData = [
   },
 ]
 
-export default function PaymentModal() {
+export default function PaymentFormDialog() {
   const [open, setOpen] = useState(false)
   const [selectedTenant, setSelectedTenant] = useState("")
   const [selectedHouse, setSelectedHouse] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
   const [description, setDescription] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   // Effect to handle mutual exclusivity between tenant and house selection
   useEffect(() => {
@@ -77,20 +78,31 @@ export default function PaymentModal() {
     }
   }, [selectedHouse])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Process payment submission logic here
-    console.log({
-      tenant: selectedTenant,
-      house: selectedHouse,
-      amount: paymentAmount,
-      method: paymentMethod,
-      description,
-    })
+    setIsLoading(true)
 
-    // Reset form and close dialog
-    resetForm()
-    setOpen(false)
+    try {
+      // Simulate API call with timeout
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      // Process payment submission logic here
+      console.log({
+        tenant: selectedTenant,
+        house: selectedHouse,
+        amount: paymentAmount,
+        method: paymentMethod,
+        description,
+      })
+
+      // Reset form and close dialog
+      resetForm()
+      setOpen(false)
+    } catch (error) {
+      console.error("Payment submission failed:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const resetForm = () => {
@@ -104,8 +116,9 @@ export default function PaymentModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1">
-          <Plus className="h-4 w-4" /> New Payment
+        <Button size="sm" variant="default" className="gap-1">
+          <Plus className="h-4 w-4" />
+          Record Payment
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -219,7 +232,16 @@ export default function PaymentModal() {
             >
               Cancel
             </Button>
-            <Button type="submit">Submit Payment</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Submit Payment"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

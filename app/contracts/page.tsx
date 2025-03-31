@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ChevronRight, Plus } from "lucide-react"
 import PaymentModal from "@/components/payment-modal"
+import { Suspense } from "react"
+import { Loader2 } from "lucide-react"
 
 export default function Contracts() {
   return (
@@ -15,7 +17,16 @@ export default function Contracts() {
           <Button size="sm" className="gap-1" variant="outline">
             <Plus className="h-4 w-4" /> New Contract
           </Button>
-          <PaymentModal />
+          <Suspense
+            fallback={
+              <Button size="sm" className="gap-1" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Record Payment
+              </Button>
+            }
+          >
+            <PaymentModal />
+          </Suspense>
         </div>
       </div>
 
