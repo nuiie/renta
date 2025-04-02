@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight } from "lucide-react"
 import { getProperties, getPayments } from "@/lib/airtable"
 import { Suspense } from "react"
-import { toCurrency } from "@/lib/utils"
+import { calculateDaysDifference, formatDateDDMMYY, toCurrency } from "@/lib/utils"
+// import { LatePayment } from "@/components/dashboard"
 
 export default async function Dashboard() {
   return (
@@ -55,54 +56,9 @@ export default async function Dashboard() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium">Late Payments</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="divide-y text-sm">
-            {[
-              {
-                property: "71/53 พฤกษา (ลูกค้า)",
-                amount: "฿6,940.00",
-                days: 18,
-                due: "01/03/2025",
-              },
-              {
-                property: "181/26 ติดเขา",
-                amount: "฿11,000.00",
-                days: 138,
-                due: "01/11/2024",
-              },
-              {
-                property: "181/26 ติดเขา",
-                amount: "฿11,000.00",
-                days: 108,
-                due: "01/12/2024",
-              },
-            ].map((payment, i) => (
-              <div key={i} className="p-3 flex justify-between items-center">
-                <div>
-                  <p className="font-medium">{payment.property}</p>
-                  <p className="text-gray-500 text-xs">Due: {payment.due}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium">{payment.amount}</p>
-                  <Badge variant="destructive" className="text-xs">
-                    {payment.days} days late
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-          <Link
-            href="/payments"
-            className="block text-center p-2 text-sm text-blue-600 hover:underline"
-          >
-            View all late payments
-          </Link>
-        </CardContent>
-      </Card>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LatePayment />
+      </Suspense>
 
       <Card>
         <CardHeader className="pb-2">
@@ -110,8 +66,8 @@ export default async function Dashboard() {
             Recent Transactions
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="divide-y text-sm">
+        <CardContent className="text-sm">
+          <div className="divide-y">
             {[
               {
                 date: "17/03/2025",
@@ -138,7 +94,7 @@ export default async function Dashboard() {
                 from: "จาก BBL",
               },
             ].map((transaction, i) => (
-              <div key={i} className="p-3 flex justify-between items-center">
+              <div key={i} className="py-3 flex justify-between items-center">
                 <div>
                   <p className="font-medium">{transaction.date}</p>
                   <p className="text-gray-500 text-xs">{transaction.method}</p>
@@ -152,7 +108,7 @@ export default async function Dashboard() {
           </div>
           <Link
             href="/transactions"
-            className="block text-center p-2 text-sm text-blue-600 hover:underline"
+            className="block text-center mt-2 text-sm text-blue-600 hover:underline"
           >
             View all transactions
           </Link>
@@ -222,26 +178,61 @@ function PropertyLoading() {
         <div className="grid grid-cols-2 gap-2">
           <div>
             <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
           </div>
           <div>
             <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="mt-1 h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
           </div>
           <div>
             <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
           </div>
           <div>
             <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="mt-1 h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
           </div>
           <div>
             <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
           </div>
         </div>
       </CardContent>
     </Card>
   )
-} 
+}
+
+async function LatePayment() {
+  const latePayments = await getPayments({ overdue: true })
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-medium">Late Payments</CardTitle>
+      </CardHeader>
+      <CardContent className="text-sm">
+        <div className="divide-y">
+          {latePayments.map((payment, i) => (
+            <div key={i} className="py-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium">{payment.nickname}</p>
+                <p className="text-gray-500 text-xs">Due: {formatDateDDMMYY(payment.due)}</p>
+              </div>
+              <div className="text-right">
+                <p className="font-medium">{toCurrency(payment.amountToBePaid)}</p>
+                <Badge variant="destructive" className="text-xs">
+                  {calculateDaysDifference(payment.due)} days late
+                </Badge>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Link
+          href="/payments"
+          className="block text-center mt-2 text-sm text-blue-600 hover:underline"
+        >
+          View all late payments
+        </Link>
+      </CardContent>
+    </Card>
+  )
+}

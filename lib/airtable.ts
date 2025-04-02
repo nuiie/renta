@@ -128,6 +128,8 @@ export const getPayments = async (
           paidAmount: r.fields.paid_amount as number,
           bank: r.fields.bank as BankAccount,
           desc: r.fields.desc as string,
+          nickname: r.fields.nickname as string,
+          tenant: r.fields.tenant as string,
         })
       )
       .sort((a, b) => a.paymentNumber - b.paymentNumber)
