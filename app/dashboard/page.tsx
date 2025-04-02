@@ -2,13 +2,14 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight } from "lucide-react"
-import { getProperties } from "@/lib/airtable"
+import { getProperties, getPayments } from "@/lib/airtable"
 import { Suspense } from "react"
+import { toCurrency } from "@/lib/utils"
 
 export default async function Dashboard() {
   return (
     <div className="space-y-4">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<PropertyLoading />}>
         <Property />
       </Suspense>
 
@@ -162,8 +163,10 @@ export default async function Dashboard() {
 }
 
 async function Property() {
-  const properties = await getProperties()
-  console.log(properties, properties.length)
+  const [properties, latePayments] = await Promise.all([
+    getProperties(),
+    getPayments({ overdue: true }),
+  ])
   const active = properties?.filter((p) => p.daysLeft > 0)
   const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
   const activeCount = active?.length
@@ -186,23 +189,59 @@ async function Property() {
             <p className="font-medium">{activeCount}</p>
           </div>
           <div>
-            <p className="text-gray-500">Total Rent</p>
-            <p className="font-medium">฿{activeSum}</p>
+            <p className="text-gray-500">Revenue</p>
+            <p className="font-medium">฿{toCurrency(activeSum)}</p>
           </div>
           <div>
             <p className="text-gray-500">Inactive Properties</p>
             <p className="font-medium">{inactiveCount}</p>
           </div>
           <div>
-            <p className="text-gray-500">Inactive Rent</p>
-            <p className="font-medium text-red-500">{inactiveSum}</p>
+            <p className="text-gray-500">Missing Revenue</p>
+            <p className="font-medium text-red-500">฿{toCurrency(inactiveSum)}</p>
           </div>
           <div>
             <p className="text-gray-500">Late Payments</p>
-            <p className="font-medium text-red-500">7</p>
+            <p className="font-medium text-red-500">{latePayments.length}</p>
           </div>
         </div>
       </CardContent>
     </Card>
   )
 }
+
+function PropertyLoading() {
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-medium">
+          Property Summary
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="text-sm">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div>
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div>
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div>
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div>
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+} 
