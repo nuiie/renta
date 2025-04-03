@@ -13,9 +13,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    useCache: false,
-  },
 }
 
 export default nextConfig
