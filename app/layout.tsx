@@ -30,6 +30,7 @@ export default function RootLayout({
             </footer>
           </div>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   )
