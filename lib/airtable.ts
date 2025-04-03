@@ -35,7 +35,7 @@ export const getProperties = async (): Promise<Property[]> => {
             : 0,
         launchDate: new Date(r.fields.launch_date as string),
         images: r.fields.images as ImageObject[],
-        currentContractId: (r.fields.current_contract as number) ?? null,
+        currentContractId: ((r.fields.current_contract as unknown) as number[])?.[0] ?? null,
       })
     )
     res.sort((a, b) => a.id - b.id)
@@ -128,6 +128,8 @@ export const getPayments = async (
           paidAmount: r.fields.paid_amount as number,
           bank: r.fields.bank as BankAccount,
           desc: r.fields.desc as string,
+          nickname: r.fields.nickname as string,
+          tenant: r.fields.tenant as string,
         })
       )
       .sort((a, b) => a.paymentNumber - b.paymentNumber)
@@ -245,4 +247,42 @@ export async function getMaintenance(): Promise<Maintenance[]> {
 //    - if transaction is succesfully updated, mark as 1
 //    - if unable to map transaction to payment, mark as 2
 //    - if unable to update payment, leave mark empty
+// export async function updatePayment(
+//   transaction: Transaction
+// ): Promise<Payment | null> {
+//   console.log("updating payment...")
+//   try {
+//     const payments = await getPayments({
+//       overdue: true,
+//       contractId: transaction.contractId,
+//     })
+//     await delay(250) // Add delay after fetch
+
+//     const payment = payments.find(
+//       (p) => p.paymentNumber === transaction.paymentNumber
+//     )
+//     if (!payment) {
+//       console.log("Unable to find payment")
+//       return null
+//     }
+
+//     const updatedPayment = await base("payment").update([
+//       {
+//         id: payment.airtableId,
+//         fields: {
+//           paid_date: new Date(transaction.date),
+//           paid_amount: transaction.amount,
+//           payment_status: "Paid",
+//           bank: transaction.bank,
+//           desc: transaction.desc,
+//         },
+//       },
+//     ])
+//     return updatedPayment[0]
+//   } catch (error) {
+//     console.error("Error updating payment:", error)
+//     throw error // Re-throw the error after logging it
+//   }
+// }
+
 export default base

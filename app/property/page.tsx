@@ -5,7 +5,7 @@ export default async function Property() {
   const properties = await getProperties()
 
   return (
-    <section className="px-6 max-w-md">
+    <section className="space-y-4 max-w-md">
       <PropertyBrowser properties={properties} />
     </section>
   )

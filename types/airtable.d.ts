@@ -87,6 +87,8 @@ declare global {
     paidAmount: number
     bank: BankAccount
     desc: string
+    nickname: string
+    tenant: string
   }
 
   interface ContractWithOverdue extends Contract {
