@@ -9,8 +9,8 @@ export function Navigation() {
 
   const links = [
     { name: "Dashboard", href: "/dashboard" },
-    { name: "Properties", href: "/properties" },
-    { name: "Contracts", href: "/contracts" },
+    { name: "Property", href: "/property" },
+    { name: "Contract", href: "/contract" },
     { name: "Maintenance", href: "/maintenance" },
     { name: "Airtable", href: "/airtable" },
   ]

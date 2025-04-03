@@ -73,8 +73,8 @@ export default function Contracts() {
                     contract.status === "Ongoing"
                       ? "default"
                       : contract.status === "Expired"
-                      ? "secondary"
-                      : "outline"
+                        ? "secondary"
+                        : "outline"
                   }
                 >
                   {contract.status}
@@ -90,7 +90,7 @@ export default function Contracts() {
                   {contract.tenant}
                 </p>
               </div>
-              <Link href={`/contracts/${contract.id}`}>
+              <Link href={`/contract/${contract.id}`}>
                 <Button variant="link" size="sm" className="px-0 h-auto">
                   View Details <ChevronRight className="h-3 w-3 ml-1" />
                 </Button>

@@ -30,10 +30,7 @@ export default async function Dashboard() {
 }
 
 async function Property() {
-  const [properties, latePayments] = await Promise.all([
-    getProperties(),
-    getPayments({ overdue: true }),
-  ])
+  const properties = await getProperties()
   const active = properties?.filter((p) => p.daysLeft > 0)
   const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
   const activeCount = active?.length
@@ -49,31 +46,23 @@ async function Property() {
           Property Summary
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="divide-y">
-          <div className="p-3">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <p className="text-gray-500">Active Properties</p>
-                <p className="font-medium">{activeCount}</p>
-              </div>
-              <div>
-                <p className="text-gray-500">Expected Revenue</p>
-                <p className="font-medium">฿{toCurrency(activeSum)}</p>
-              </div>
-              <div>
-                <p className="text-gray-500">Inactive Properties</p>
-                <p className="font-medium">{inactiveCount}</p>
-              </div>
-              <div>
-                <p className="text-gray-500">Missing Revenue</p>
-                <p className="font-medium text-red-500">฿{toCurrency(inactiveSum)}</p>
-              </div>
-              <div>
-                <p className="text-gray-500">Late Payments</p>
-                <p className="font-medium text-red-500">{latePayments.length}</p>
-              </div>
-            </div>
+      <CardContent className="text-sm">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <p className="text-gray-500">Active Properties</p>
+            <p className="font-medium">{activeCount}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Revenue</p>
+            <p className="font-medium">฿{toCurrency(activeSum)}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Inactive Properties</p>
+            <p className="font-medium">{inactiveCount}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Missing Revenue</p>
+            <p className="font-medium text-red-500">฿{toCurrency(inactiveSum)}</p>
           </div>
         </div>
       </CardContent>
