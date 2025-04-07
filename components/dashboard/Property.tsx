@@ -1,8 +1,15 @@
 import { toCurrency } from "@/lib/utils"
-import { getProperties } from "@/lib/airtable"
+import { getProperty } from "@/lib/directFetchAirtable"
 
 export default async function Property() {
-  const properties = await getProperties()
+  const propertyRecords = await getProperty()
+  const properties = propertyRecords.map(record => ({
+    id: record.fields.id,
+    nickname: record.fields.nickname,
+    maxRent: record.fields.max_rent || 0,
+    daysLeft: record.fields.days_left || 0,
+    airtableId: record.id
+  }))
 
   const count = properties?.length
   const active = properties?.filter((p) => p.daysLeft > 0)

@@ -1,4 +1,4 @@
-import { getPayments, getContracts } from "@/lib/airtable"
+import { getPayment, getContract } from "@/lib/directFetchAirtable"
 import {
   toCurrency,
   calculateDaysDifference,
@@ -6,10 +6,27 @@ import {
 } from "@/lib/utils"
 
 export default async function LatePayment() {
-  const [payments, contracts] = await Promise.all([
-    getPayments({ overdue: true }),
-    getContracts({ current: false }),
+  const [paymentRecords, contractRecords] = await Promise.all([
+    getPayment(),
+    getContract(),
   ])
+
+  // Filter overdue payments
+  const payments = paymentRecords
+    .filter(record => record.fields.payment_status === 'Overdue')
+    .map(record => ({
+      airtableId: record.id,
+      contractAId: record.fields.contract_id,
+      amountToBePaid: record.fields.amount_to_be_paid || 0,
+      due: new Date(record.fields.due),
+    }))
+
+  // Map contracts to the expected format
+  const contracts = contractRecords.map(record => ({
+    airtableId: record.id,
+    nickname: record.fields.nickname?.[0] || 'Unknown Property',
+  }))
+
   const filteredContract = filterContractWithOverdue(contracts, payments)
 
   return (
@@ -48,24 +65,26 @@ function ContractCard({ payment }: { payment: Payment }) {
   )
 }
 
+// Define the Payment type
+interface Payment {
+  airtableId: string
+  contractAId: string
+  amountToBePaid: number
+  due: Date
+}
+
+// Define the Contract type
+interface Contract {
+  airtableId: string
+  nickname: string
+}
+
 function filterContractWithOverdue(
   contracts: Contract[],
   payments: Payment[]
 ): Contract[] {
-  return contracts
-    .map((contract) => {
-      const overduePayments = contract.paymentAId?.filter((paymentId) => {
-        const payment = payments.find((p) => p.airtableId === paymentId)
-        return payment?.paymentStatus === "Overdue"
-      })
-
-      if (overduePayments && overduePayments.length > 0) {
-        return {
-          ...contract,
-          paymentAId: overduePayments,
-        }
-      }
-      return null
-    })
-    .filter((contract) => contract !== null) as Contract[]
+  const contractIdsWithOverdue = new Set(
+    payments.map((p) => p.contractAId)
+  )
+  return contracts.filter((c) => contractIdsWithOverdue.has(c.airtableId))
 }

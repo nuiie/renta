@@ -21,23 +21,24 @@ import { Label } from "@/components/ui/label"
 import { toCurrency } from "@/lib/utils"
 
 export default function PropertyBrowser({
-  properties,
+  initialProperties,
 }: {
-  properties: Property[]
+  initialProperties: Property[]
 }) {
   const [searchQuery, setSearchQuery] = useState("")
   const [priceRange, setPriceRange] = useState([0, 50000])
   const [sortOption, setSortOption] = useState("featured")
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
 
-  if (!properties) return <div>browser Loading...</div>
   // Filter properties based on search, price range, and available status
-  const filteredProperties = properties.filter((property) => {
+  const filteredProperties = initialProperties.filter((property) => {
     const matchesSearch = property.nickname
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+      ? property.nickname.toLowerCase().includes(searchQuery.toLowerCase())
+      : false
     const matchesPrice =
-      property.maxRent >= priceRange[0] && property.maxRent <= priceRange[1]
+      property.maxRent != null &&
+      property.maxRent >= priceRange[0] &&
+      property.maxRent <= priceRange[1]
     const matchesAvailable = showAvailableOnly
       ? !property.currentContractId
       : true
@@ -49,9 +50,9 @@ export default function PropertyBrowser({
   const sortedProperties = [...filteredProperties].sort((a, b) => {
     switch (sortOption) {
       case "price-low":
-        return a.maxRent - b.maxRent
+        return (a.maxRent || 0) - (b.maxRent || 0)
       case "price-high":
-        return b.maxRent - a.maxRent
+        return (b.maxRent || 0) - (a.maxRent || 0)
       default:
         return 0 // featured - maintain original order
     }
@@ -110,20 +111,20 @@ export default function PropertyBrowser({
       {/* Results summary */}
       <div className="mt-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedProperties.length} of {properties.length} properties
+          Showing {sortedProperties.length} of {initialProperties.length} properties
         </p>
       </div>
 
       {/* Property grid */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2">
-        {sortedProperties.map((property) => (
+        {sortedProperties.map((property, index) => (
           <Card
-            key={property.airtableId}
+            key={property.id || `property-${index}`}
             className="overflow-hidden flex flex-col justify-between"
           >
             <div className="relative">
               <Image
-                src={property.images[0].url || "/placeholder.svg"}
+                src={property.images && property.images.length > 0 ? property.images[0].url : "/placeholder.svg"}
                 alt={property.nickname}
                 width={300}
                 height={300}
@@ -137,15 +138,16 @@ export default function PropertyBrowser({
             </div>
             <CardContent className="p-2 flex-grow">
               <div className="space-y-1">
-                <h3 className="font-semibold">{property.nickname}</h3>
+                <h3 className="font-semibold">{property.nickname || `Property ${property.id || ''}`}</h3>
                 <p className="text-sm text-muted-foreground truncate">
-                  {`contract id: ${property.currentContractId}` ||
-                    "Available for rent"}
+                  {property.currentContractId
+                    ? `Contract ID: ${property.currentContractId}`
+                    : "Available for rent"}
                 </p>
               </div>
               <div className="mt-2 flex items-center justify-between">
                 <span className="font-medium">
-                  {toCurrency(property.maxRent)}
+                  {toCurrency(property.maxRent || 0)}
                 </span>
               </div>
             </CardContent>

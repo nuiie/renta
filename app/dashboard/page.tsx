@@ -2,10 +2,10 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowDown, ArrowRight, ArrowUp, Calendar } from "lucide-react"
-import { getProperties, getPayments, getRevenueChartData } from "@/lib/airtable"
+import { getProperty, getRevenueChartData } from "@/lib/directFetchAirtable"
 import { Suspense } from "react"
 import { calculateDaysDifference, formatDateDDMMYY, toCurrency } from "@/lib/utils"
-import { getTransaction } from "@/lib/google"// import { LatePayment } from "@/components/dashboard"
+import { getTransaction } from "@/lib/google"
 
 export default async function Dashboard() {
   return (
@@ -30,7 +30,8 @@ export default async function Dashboard() {
 }
 
 async function Property() {
-  const properties = await getProperties()
+  const properties = await getProperty()
+
   const active = properties?.filter((p) => p.daysLeft > 0)
   const activeSum = active?.reduce((acc, curr) => acc + curr.maxRent, 0)
   const activeCount = active?.length

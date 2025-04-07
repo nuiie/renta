@@ -3,11 +3,28 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Home, DollarSign, Calendar } from "lucide-react"
 import PropertyCarousel from "./property-carousel"
-import { getProperties, getContracts } from "@/lib/airtable"
+import { getProperty, getContract } from "@/lib/directFetchAirtable"
 import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
 import Link from "next/link"
 import { Suspense } from "react"
 import PaymentDetail from "@/components/PaymentDetail"
+
+// Define the Contract type
+interface Contract {
+  id: number
+  propertyAId: string
+  nickname: string
+  tenant: string
+  contractStatus: string
+  startDate: Date
+  duration: number
+  endDate: Date
+  rent: number
+  commonFee: number
+  tax: boolean
+  paymentAId: string[]
+  airtableId: string
+}
 
 function PropertyDetailsSkeleton() {
   return (
@@ -117,7 +134,7 @@ function PaymentHistorySkeleton() {
   )
 }
 
-function PropertyDetails({ property }: { property: Property }) {
+function PropertyDetailsCard({ property }: { property: Property }) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -191,23 +208,28 @@ function RentalContracts({ contracts }: { contracts: Contract[] }) {
 }
 
 export default async function PropertyDetail({
-  params
+  params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }) {
-  const { id } = await params
-  const property = (await getProperties()).find((p) => p.id === parseInt(id))
+  const { id } = params
+
+  const [properties, contracts] = await Promise.all([
+    getProperty(),
+    getContract(),
+  ])
+
+  // Find the property with the matching ID
+  const property = properties.find(p => p.id.toString() === id)
 
   if (!property) {
-    return <div>property not found</div>
+    return <div>Property not found</div>
   }
-  const contracts = (await getContracts({ current: false })).filter((c) => property.contract.includes(c.airtableId))
 
-  let currentContract: Contract | undefined = undefined
-
-  if (property.currentContractId) {
-    currentContract = contracts.find((c) => c.id === property.currentContractId)
-  }
+  // Filter contracts for this property
+  const propertyContracts = contracts.filter(
+    (contract) => contract.propertyAId === property.airtableId
+  )
 
   return (
     <div className="space-y-4">
@@ -225,15 +247,15 @@ export default async function PropertyDetail({
       <PropertyCarousel images={property.images.map((i) => i.url)} />
 
       <Suspense fallback={<PropertyDetailsSkeleton />}>
-        <PropertyDetails property={property} />
+        <PropertyDetailsCard property={property} />
       </Suspense>
 
       <Suspense fallback={<RentalContractsSkeleton />}>
-        <RentalContracts contracts={contracts} />
+        <RentalContracts contracts={propertyContracts} />
       </Suspense>
 
       <Suspense fallback={<PaymentHistorySkeleton />}>
-        <PaymentDetail contract={currentContract} />
+        <PaymentDetail propertyId={property.id} />
       </Suspense>
     </div>
   )

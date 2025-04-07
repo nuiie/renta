@@ -2,15 +2,51 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DollarSign, AlertTriangle } from "lucide-react"
-import { getPayments } from "@/lib/airtable"
+import { getPayment } from "@/lib/directFetchAirtable"
 import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
 
-export default async function PaymentDetail({ contract }: { contract: Contract | undefined }) {
-  if (!contract) {
+// Define the Payment type
+interface Payment {
+  airtableId: string
+  contractAId: string
+  amountToBePaid: number
+  paidAmount: number
+  due: Date
+  paidDate?: Date
+  paymentStatus: string
+  paymentNumber: number
+  paymentType: string
+  bank?: string
+  desc?: string
+}
+
+export default async function PaymentDetail({ propertyId }: { propertyId: number }) {
+  const paymentRecords = await getPayment()
+
+  // Filter payments for this property
+  const payments = paymentRecords
+    .filter(record => {
+      // We need to find payments associated with contracts for this property
+      // This is a simplified approach - in a real app, you might need to join with contracts
+      return record.fields.contract_id && record.fields.contract_id.includes(propertyId.toString())
+    })
+    .map(record => ({
+      airtableId: record.id,
+      contractAId: record.fields.contract_id,
+      amountToBePaid: record.fields.amount_to_be_paid || 0,
+      paidAmount: record.fields.paid_amount || 0,
+      due: new Date(record.fields.due),
+      paidDate: record.fields.paid_date ? new Date(record.fields.paid_date) : undefined,
+      paymentStatus: record.fields.payment_status,
+      paymentNumber: record.fields.payment_number || 0,
+      paymentType: record.fields.payment_type || 'Unknown',
+      bank: record.fields.bank,
+      desc: record.fields.desc
+    }))
+
+  if (payments.length === 0) {
     return null
   }
-
-  const payments = await getPayments({ contractId: contract.id })
 
   const totalDue = payments.reduce((acc, payment) => acc + payment.amountToBePaid, 0)
   const totalPaid = payments.filter(p => p.paymentStatus === "Paid").reduce((acc, payment) => acc + payment.paidAmount, 0)

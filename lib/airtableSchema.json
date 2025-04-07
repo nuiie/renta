@@ -1,0 +1,796 @@
+{
+  "tables": [
+    {
+      "id": "tbl357Y8JTdd9G7Xz",
+      "name": "property",
+      "primaryFieldId": "fldsoMDt4Wwl4HhKc",
+      "fields": [
+        {
+          "type": "autoNumber",
+          "id": "fldsoMDt4Wwl4HhKc",
+          "name": "id"
+        },
+        {
+          "type": "singleLineText",
+          "id": "fldh4rfzKuSDphkyu",
+          "name": "nickname"
+        },
+        {
+          "type": "singleLineText",
+          "id": "fldId5eO0ugAl9OQB",
+          "name": "address"
+        },
+        {
+          "type": "multilineText",
+          "id": "fldtoPsTz4NkrnZXC",
+          "name": "description"
+        },
+        {
+          "type": "singleLineText",
+          "id": "fldgK7PoYBMskZDXE",
+          "name": "g_maps"
+        },
+        {
+          "type": "multipleAttachments",
+          "options": {
+            "isReversed": false
+          },
+          "id": "fldbFDJLyXp56RpSW",
+          "name": "images"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tblxb6U8am1D9aaBI",
+            "isReversed": false,
+            "prefersSingleRecordLink": true,
+            "inverseLinkFieldId": "fldJlrHCVbU4oV0Vt"
+          },
+          "id": "fldIhHxl9DLJMtUON",
+          "name": "contract"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldIhHxl9DLJMtUON",
+            "fieldIdInLinkedTable": "fldQO5gU8o6lJz9MQ",
+            "result": {
+              "type": "currency",
+              "options": {
+                "precision": 2,
+                "symbol": ""
+              }
+            }
+          },
+          "id": "fld5nUW0yo6RXJwGZ",
+          "name": "rent"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tblsOU5AJ6ojtJL05",
+            "isReversed": false,
+            "prefersSingleRecordLink": false,
+            "inverseLinkFieldId": "fldFuvqREvpexy7vF"
+          },
+          "id": "fldgEEf9L9nqlDmqv",
+          "name": "maintenance"
+        },
+        {
+          "type": "checkbox",
+          "options": {
+            "icon": "check",
+            "color": "greenBright"
+          },
+          "id": "fldSanpxCi24uxkeQ",
+          "name": "off_track"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "MAX({fld5nUW0yo6RXJwGZ})",
+            "referencedFieldIds": [
+              "fld5nUW0yo6RXJwGZ"
+            ],
+            "result": {
+              "type": "number",
+              "options": {
+                "precision": 2
+              }
+            }
+          },
+          "id": "fldzOo8DWHNGCm4sg",
+          "name": "max_rent"
+        },
+        {
+          "type": "rollup",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldIhHxl9DLJMtUON",
+            "fieldIdInLinkedTable": "fldcSxUjJEEp20dEI",
+            "referencedFieldIds": [],
+            "result": {
+              "type": "date",
+              "options": {
+                "dateFormat": {
+                  "name": "european",
+                  "format": "D/M/YYYY"
+                }
+              }
+            }
+          },
+          "id": "fldUBP6NoJChZQwEz",
+          "name": "latest_contract_end"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "DATETIME_DIFF(\r\n  {fldUBP6NoJChZQwEz},\r\n  TODAY(),\r\n  'days'\r\n)\r\n",
+            "referencedFieldIds": [
+              "fldUBP6NoJChZQwEz"
+            ],
+            "result": {
+              "type": "number",
+              "options": {
+                "precision": 0
+              }
+            }
+          },
+          "id": "fldsYkF4IRC7ZkoMC",
+          "name": "days_left"
+        },
+        {
+          "type": "date",
+          "options": {
+            "dateFormat": {
+              "name": "european",
+              "format": "D/M/YYYY"
+            }
+          },
+          "id": "fldCEXEvBXiX5XHzS",
+          "name": "launch_date"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldIhHxl9DLJMtUON",
+            "fieldIdInLinkedTable": "fldH2B1MjRMBvPJkM",
+            "result": {
+              "type": "number",
+              "options": {
+                "precision": 0
+              }
+            }
+          },
+          "id": "fldu0KcYOABJycwQc",
+          "name": "current_contract"
+        }
+      ],
+      "views": [
+        {
+          "id": "viw400ePtfVDQUWe5",
+          "name": "Grid view",
+          "type": "grid"
+        }
+      ]
+    },
+    {
+      "id": "tblxb6U8am1D9aaBI",
+      "name": "contract",
+      "primaryFieldId": "fldH2B1MjRMBvPJkM",
+      "fields": [
+        {
+          "type": "autoNumber",
+          "id": "fldH2B1MjRMBvPJkM",
+          "name": "id"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tbl357Y8JTdd9G7Xz",
+            "isReversed": false,
+            "prefersSingleRecordLink": true,
+            "inverseLinkFieldId": "fldIhHxl9DLJMtUON"
+          },
+          "id": "fldJlrHCVbU4oV0Vt",
+          "name": "property"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldJlrHCVbU4oV0Vt",
+            "fieldIdInLinkedTable": "fldh4rfzKuSDphkyu",
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fld5JXAp6xhpUL0Bx",
+          "name": "nickname"
+        },
+        {
+          "type": "singleLineText",
+          "id": "fld9t9tEAWOIyZyAo",
+          "name": "tenant"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "IF(\r\n  {fldMRZeDcZRKPbL0U},\r\n  \"Terminated\",\r\n  IF(IS_BEFORE(TODAY(), {fldfmP4vGGvfOJugJ}),\r\n    \"Pending\",\r\n    IF(IS_BEFORE(TODAY(), {fldcSxUjJEEp20dEI}),\r\n    \"Ongoing\",\r\n    \"Expired\"\r\n    )\r\n  )\r\n)\r\n\r\n\r\n\r\n",
+            "referencedFieldIds": [
+              "fldMRZeDcZRKPbL0U",
+              "fldfmP4vGGvfOJugJ",
+              "fldcSxUjJEEp20dEI"
+            ],
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldDdrtSUTehygjYg",
+          "name": "contract_status"
+        },
+        {
+          "type": "checkbox",
+          "options": {
+            "icon": "check",
+            "color": "greenBright"
+          },
+          "id": "fldMRZeDcZRKPbL0U",
+          "name": "terminated"
+        },
+        {
+          "type": "date",
+          "options": {
+            "dateFormat": {
+              "name": "european",
+              "format": "D/M/YYYY"
+            }
+          },
+          "id": "fldfmP4vGGvfOJugJ",
+          "name": "start_date"
+        },
+        {
+          "type": "number",
+          "options": {
+            "precision": 0
+          },
+          "id": "fldpdSvXaFRvqvl2P",
+          "name": "duration",
+          "description": "months"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "DATEADD(DATEADD({fldfmP4vGGvfOJugJ}, {fldpdSvXaFRvqvl2P}, \"months\"), -1, \"days\")",
+            "referencedFieldIds": [
+              "fldfmP4vGGvfOJugJ",
+              "fldpdSvXaFRvqvl2P"
+            ],
+            "result": {
+              "type": "date",
+              "options": {
+                "dateFormat": {
+                  "name": "european",
+                  "format": "D/M/YYYY"
+                }
+              }
+            }
+          },
+          "id": "fldcSxUjJEEp20dEI",
+          "name": "end_date",
+          "description": "start date until 1 day before next month"
+        },
+        {
+          "type": "number",
+          "options": {
+            "precision": 2
+          },
+          "id": "fldQO5gU8o6lJz9MQ",
+          "name": "rent"
+        },
+        {
+          "type": "currency",
+          "options": {
+            "precision": 0,
+            "symbol": ""
+          },
+          "id": "fldZuNOLUhh2Oi7eP",
+          "name": "common_fee"
+        },
+        {
+          "type": "checkbox",
+          "options": {
+            "icon": "check",
+            "color": "greenBright"
+          },
+          "id": "fldldCM67uxwvF73J",
+          "name": "5%"
+        },
+        {
+          "type": "multipleAttachments",
+          "options": {
+            "isReversed": false
+          },
+          "id": "fldxkNOxCdPnbu9jK",
+          "name": "soft_file"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tbloob8vM0OlPcDTD",
+            "isReversed": false,
+            "prefersSingleRecordLink": false,
+            "inverseLinkFieldId": "fldMoG94Ce9Ycuz2R"
+          },
+          "id": "fld6mDT5jdqeqT7Ba",
+          "name": "payment"
+        }
+      ],
+      "views": [
+        {
+          "id": "viwSAGBgCGQ65l3Oy",
+          "name": "Grid view",
+          "type": "grid"
+        }
+      ]
+    },
+    {
+      "id": "tbloob8vM0OlPcDTD",
+      "name": "payment",
+      "primaryFieldId": "fldW9m3oSQpoBztpd",
+      "fields": [
+        {
+          "type": "autoNumber",
+          "id": "fldW9m3oSQpoBztpd",
+          "name": "id"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tblxb6U8am1D9aaBI",
+            "isReversed": false,
+            "prefersSingleRecordLink": true,
+            "inverseLinkFieldId": "fld6mDT5jdqeqT7Ba"
+          },
+          "id": "fldMoG94Ce9Ycuz2R",
+          "name": "contract_id"
+        },
+        {
+          "type": "singleSelect",
+          "options": {
+            "choices": [
+              {
+                "id": "sel7O1Q3IFiU8iM92",
+                "name": "Security Deposit",
+                "color": "blueLight2"
+              },
+              {
+                "id": "selWsnvISSD9EsCnx",
+                "name": "Rent",
+                "color": "cyanLight2"
+              }
+            ]
+          },
+          "id": "fld4UBHet8rplOfqv",
+          "name": "payment_type"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "\r\n\r\nIF({fldv9dHQ9zDqiFGbA}=1,\r\n  IF({fld4UBHet8rplOfqv}=\"Security Deposit\", \r\n    ROUND({fldEsGUfHSs9f1MS0}*1.9, 2), \r\n    ROUND({fldEsGUfHSs9f1MS0}*0.95+{fldnxCSaFYyYx9Jd3},2)),\r\n  IF({fld4UBHet8rplOfqv}=\"Security Deposit\", \r\n    ROUND({fldEsGUfHSs9f1MS0}*2,2), \r\n    ROUND({fldEsGUfHSs9f1MS0}+{fldnxCSaFYyYx9Jd3},2))\r\n)",
+            "referencedFieldIds": [
+              "fldv9dHQ9zDqiFGbA",
+              "fld4UBHet8rplOfqv",
+              "fldEsGUfHSs9f1MS0",
+              "fldnxCSaFYyYx9Jd3"
+            ],
+            "result": {
+              "type": "currency",
+              "options": {
+                "precision": 2,
+                "symbol": ""
+              }
+            }
+          },
+          "id": "fld4bEWA9YboEgZDR",
+          "name": "amount_to_be_paid"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "IF({fld8ZDht6CAEYKWck}<2, {fldQkNl9Oh0rApqIk}, DATEADD({fldQkNl9Oh0rApqIk}, {fld8ZDht6CAEYKWck}-1, 'months'))",
+            "referencedFieldIds": [
+              "fld8ZDht6CAEYKWck",
+              "fldQkNl9Oh0rApqIk"
+            ],
+            "result": {
+              "type": "date",
+              "options": {
+                "dateFormat": {
+                  "name": "european",
+                  "format": "D/M/YYYY"
+                }
+              }
+            }
+          },
+          "id": "fldvz2KyXlSM63zHT",
+          "name": "due",
+          "description": "งวดแรกจ่ายเลย งวดต่อไปจ่ายต้นเดือน"
+        },
+        {
+          "type": "number",
+          "options": {
+            "precision": 0
+          },
+          "id": "fld8ZDht6CAEYKWck",
+          "name": "payment_number"
+        },
+        {
+          "type": "checkbox",
+          "options": {
+            "icon": "check",
+            "color": "greenBright"
+          },
+          "id": "fld4AmkRtMUNy8HaH",
+          "name": "paid_overwrite"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "IF({fld4AmkRtMUNy8HaH},\r\n  \"Paid\",\r\n  IF(IS_BEFORE(TODAY(),{fldvz2KyXlSM63zHT}),\r\n    \"Not Due\",\r\n    IF({fld4bEWA9YboEgZDR}-{fld48b0rN1ZrA1AgF}<1,\r\n    \"Paid\",\r\n    IF({fldykXq9dKaXsBVp3}=\"Terminated\",\r\n      \"Terminated\",\r\n      \"Overdue\"\r\n    )\r\n  )\r\n)\r\n)\r\n\r\n\r\n",
+            "referencedFieldIds": [
+              "fld4AmkRtMUNy8HaH",
+              "fldvz2KyXlSM63zHT",
+              "fld4bEWA9YboEgZDR",
+              "fld48b0rN1ZrA1AgF",
+              "fldykXq9dKaXsBVp3"
+            ],
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldTWCo0Lg3s4ucp1",
+          "name": "payment_status"
+        },
+        {
+          "type": "date",
+          "options": {
+            "dateFormat": {
+              "name": "european",
+              "format": "D/M/YYYY"
+            }
+          },
+          "id": "fld0gadtjTy9wouJi",
+          "name": "paid_date"
+        },
+        {
+          "type": "number",
+          "options": {
+            "precision": 2
+          },
+          "id": "fld48b0rN1ZrA1AgF",
+          "name": "paid_amount"
+        },
+        {
+          "type": "singleSelect",
+          "options": {
+            "choices": [
+              {
+                "id": "selQ2L54A7Xd0rTxL",
+                "name": "kbank rent",
+                "color": "blueLight2"
+              },
+              {
+                "id": "selWwx0eG4pMwmGrD",
+                "name": "cash",
+                "color": "cyanLight2"
+              },
+              {
+                "id": "selx7Hq9JlKlNNudv",
+                "name": "kbank pub",
+                "color": "tealLight2"
+              },
+              {
+                "id": "selCImnBMC8BVZzoG",
+                "name": "kbank mom",
+                "color": "greenLight2"
+              },
+              {
+                "id": "selTvzVNvh2oPUHBx",
+                "name": "scb nui",
+                "color": "yellowLight2"
+              }
+            ]
+          },
+          "id": "fldSJK2jFtXCxMBgd",
+          "name": "bank"
+        },
+        {
+          "type": "multilineText",
+          "id": "fldIgXf6wuTtjGRVZ",
+          "name": "desc"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fldDdrtSUTehygjYg",
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldykXq9dKaXsBVp3",
+          "name": "contract_status"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "AND(IS_AFTER({fldvz2KyXlSM63zHT}, DATETIME_PARSE('2023-10-01')), IS_BEFORE({fldvz2KyXlSM63zHT}, DATETIME_PARSE('2025-03-31')))",
+            "referencedFieldIds": [
+              "fldvz2KyXlSM63zHT"
+            ],
+            "result": {
+              "type": "number",
+              "options": {
+                "precision": 0
+              }
+            }
+          },
+          "id": "fldZk5z2M8QXpkZYW",
+          "name": "since"
+        },
+        {
+          "type": "formula",
+          "options": {
+            "isValid": true,
+            "formula": "AND({fld4bEWA9YboEgZDR} = 11000, \r\n  AND({fldykXq9dKaXsBVp3} = 'Ongoing',\r\n    AND(1,{fldTWCo0Lg3s4ucp1} != 'Paid')\r\n  )\r\n)",
+            "referencedFieldIds": [
+              "fld4bEWA9YboEgZDR",
+              "fldykXq9dKaXsBVp3",
+              "fldTWCo0Lg3s4ucp1"
+            ],
+            "result": {
+              "type": "number",
+              "options": {
+                "precision": 0
+              }
+            }
+          },
+          "id": "fldeneIxdOHJ6LNd2",
+          "name": "filter"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fld9t9tEAWOIyZyAo",
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldbdQsK4jcjlcsMi",
+          "name": "tenant"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fldldCM67uxwvF73J",
+            "result": {
+              "type": "checkbox",
+              "options": {
+                "icon": "check",
+                "color": "greenBright"
+              }
+            }
+          },
+          "id": "fldv9dHQ9zDqiFGbA",
+          "name": "5%"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fld5JXAp6xhpUL0Bx",
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldqhI9ujgcgdAoYv",
+          "name": "nickname"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fldfmP4vGGvfOJugJ",
+            "result": {
+              "type": "date",
+              "options": {
+                "dateFormat": {
+                  "name": "european",
+                  "format": "D/M/YYYY"
+                }
+              }
+            }
+          },
+          "id": "fldQkNl9Oh0rApqIk",
+          "name": "start_date"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fldQO5gU8o6lJz9MQ",
+            "result": {
+              "type": "currency",
+              "options": {
+                "precision": 0,
+                "symbol": ""
+              }
+            }
+          },
+          "id": "fldEsGUfHSs9f1MS0",
+          "name": "rent",
+          "description": "helper field for 'amount to be paid' calculation"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldMoG94Ce9Ycuz2R",
+            "fieldIdInLinkedTable": "fldZuNOLUhh2Oi7eP",
+            "result": {
+              "type": "currency",
+              "options": {
+                "precision": 0,
+                "symbol": ""
+              }
+            }
+          },
+          "id": "fldnxCSaFYyYx9Jd3",
+          "name": "common_fee",
+          "description": "helper field for 'amount to be paid' calculation"
+        }
+      ],
+      "views": [
+        {
+          "id": "viweonP8cvRsaDmRB",
+          "name": "Grid view",
+          "type": "grid"
+        }
+      ]
+    },
+    {
+      "id": "tblsOU5AJ6ojtJL05",
+      "name": "maintenance",
+      "primaryFieldId": "fldxHGfAaEEw2lAY8",
+      "fields": [
+        {
+          "type": "autoNumber",
+          "id": "fldxHGfAaEEw2lAY8",
+          "name": "Id"
+        },
+        {
+          "type": "date",
+          "options": {
+            "dateFormat": {
+              "name": "european",
+              "format": "D/M/YYYY"
+            }
+          },
+          "id": "fldPaJ6RbooTrNI7e",
+          "name": "date"
+        },
+        {
+          "type": "multipleRecordLinks",
+          "options": {
+            "linkedTableId": "tbl357Y8JTdd9G7Xz",
+            "isReversed": false,
+            "prefersSingleRecordLink": true,
+            "inverseLinkFieldId": "fldgEEf9L9nqlDmqv"
+          },
+          "id": "fldFuvqREvpexy7vF",
+          "name": "property_id"
+        },
+        {
+          "type": "multipleLookupValues",
+          "options": {
+            "isValid": true,
+            "recordLinkFieldId": "fldFuvqREvpexy7vF",
+            "fieldIdInLinkedTable": "fldh4rfzKuSDphkyu",
+            "result": {
+              "type": "singleLineText"
+            }
+          },
+          "id": "fldWSSMbB3qYlU5L3",
+          "name": "nickname"
+        },
+        {
+          "type": "multilineText",
+          "id": "fldn3TK7tJHuJAxFj",
+          "name": "details"
+        },
+        {
+          "type": "number",
+          "options": {
+            "precision": 2
+          },
+          "id": "fldXNqqXFr0yUjvL1",
+          "name": "cost"
+        },
+        {
+          "type": "singleSelect",
+          "options": {
+            "choices": [
+              {
+                "id": "selPcJ406r1kuzuTE",
+                "name": "repair",
+                "color": "blueLight2"
+              },
+              {
+                "id": "sel2lmVrFiKw5gkGs",
+                "name": "asset",
+                "color": "cyanLight2"
+              }
+            ]
+          },
+          "id": "fldofHdVHJrcLKQL8",
+          "name": "repair_or_asset"
+        }
+      ],
+      "views": [
+        {
+          "id": "viwMrgqaJb12Dk7qQ",
+          "name": "Grid view",
+          "type": "grid"
+        }
+      ]
+    },
+    {
+      "id": "tbl8k6u3qdygTYVtb",
+      "name": "note",
+      "primaryFieldId": "fldd9Xeb8K7wucKkK",
+      "fields": [
+        {
+          "type": "singleLineText",
+          "id": "fldd9Xeb8K7wucKkK",
+          "name": "title"
+        },
+        {
+          "type": "multilineText",
+          "id": "fldDXBQYrGKHSQJSs",
+          "name": "content"
+        }
+      ],
+      "views": [
+        {
+          "id": "viw4hkFDZPHyvzJip",
+          "name": "Grid view",
+          "type": "grid"
+        },
+        {
+          "id": "viwr9CmkcLMsek8Bx",
+          "name": "Kanban",
+          "type": "kanban"
+        }
+      ]
+    }
+  ]
+}
