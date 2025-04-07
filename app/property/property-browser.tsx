@@ -26,25 +26,26 @@ export default function PropertyBrowser({
   initialProperties: Property[]
 }) {
   const [searchQuery, setSearchQuery] = useState("")
-  const [priceRange, setPriceRange] = useState([0, 50000])
+  const [priceRange, setPriceRange] = useState([0, 1000000])
   const [sortOption, setSortOption] = useState("featured")
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
 
   // Filter properties based on search, price range, and available status
   const filteredProperties = initialProperties.filter((property) => {
-    const matchesSearch = property.nickname
-      ? property.nickname.toLowerCase().includes(searchQuery.toLowerCase())
-      : false
-    const matchesPrice =
-      property.maxRent != null &&
+    // If search query is empty, consider it a match
+    const matchesSearch = !searchQuery || (property.nickname &&
+      property.nickname.toLowerCase().includes(searchQuery.toLowerCase()))
+
+    // If maxRent is undefined or null, consider it a match
+    const matchesPrice = !property.maxRent || (
       property.maxRent >= priceRange[0] &&
       property.maxRent <= priceRange[1]
-    const matchesAvailable = showAvailableOnly
-      ? !property.currentContractId
-      : true
+    )
 
+    const matchesAvailable = !showAvailableOnly || !property.currentContractId
     return matchesSearch && matchesPrice && matchesAvailable
   })
+
 
   // Sort properties based on selected option
   const sortedProperties = [...filteredProperties].sort((a, b) => {
@@ -177,7 +178,7 @@ export default function PropertyBrowser({
             variant="outline"
             onClick={() => {
               setSearchQuery("")
-              setPriceRange([0, 50000])
+              setPriceRange([0, 1000000])
               setShowAvailableOnly(false)
             }}
           >
