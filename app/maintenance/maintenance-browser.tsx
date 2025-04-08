@@ -26,7 +26,7 @@ export default function MaintenanceBrowser({ maintenanceData }: MaintenanceBrows
   const [filter, setFilter] = useState<"all" | "repair" | "asset">("all")
   const [sortBy, setSortBy] = useState<"date" | "cost">("date")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
-  console.log(maintenanceData)
+
   // Filter and sort the data
   const filteredData = maintenanceData
     .filter((item) => {

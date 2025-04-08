@@ -15,9 +15,9 @@ import { PaymentDetail } from "@/components/PaymentDetail"
 export default async function ContractDetail({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const { id } = params
+  const { id } = await params
 
   const contracts = (await getContract({ current: false })).filter((c: Contract) => c.id === parseInt(id))
 

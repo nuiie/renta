@@ -12,7 +12,7 @@ import { PropertyDetailsCard } from "./property-details-card"
 export default async function PropertyDetail({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const { id } = await params
 
