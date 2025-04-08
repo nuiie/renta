@@ -1,4 +1,4 @@
-import { getPayments } from "@/lib/airtable"
+import { getPayment } from "@/lib/directFetchAirtable"
 import PaymentHistory from "@/components/PaymentHistory"
 
 export default async function PaymentDetail({
@@ -6,11 +6,12 @@ export default async function PaymentDetail({
 }: {
   contractId: number
 }) {
-  const payments = await getPayments({ contractId: contractId })
-
+  const payments = await getPayment({ contractId: contractId })
+  console.log('payments', payments)
   return (
     <div>
-      <PaymentHistory payments={payments} />
+      {/* <PaymentHistory payments={payments} /> */}
+      Payment
     </div>
   )
 }

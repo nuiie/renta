@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { ArrowUpDown, Search } from "lucide-react"
 import Link from "next/link"
-
+import Image from "next/image"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import {
@@ -20,7 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { toCurrency } from "@/lib/utils"
 
-export default function PropertyBrowser({
+export function PropertyBrowser({
   initialProperties,
 }: {
   initialProperties: Property[]
@@ -125,7 +125,7 @@ export default function PropertyBrowser({
           >
             <div className="relative">
               <Image
-                src={property.images && property.images.length > 0 ? property.images[0].url : "/placeholder.svg"}
+                src={property.images?.[0]?.url ?? "/placeholder.svg"}
                 alt={property.nickname}
                 width={300}
                 height={300}
@@ -186,6 +186,45 @@ export default function PropertyBrowser({
           </Button>
         </div>
       )}
+    </div>
+  )
+}
+
+
+export function PropertyBrowserSkeleton() {
+  return (
+    <div className="container mx-auto max-w-md px-4 py-6">
+      <div className="flex flex-col space-y-3">
+        <Skeleton className="h-8 w-48" />
+        <div className="flex items-center space-x-2">
+          <Skeleton className="h-10 w-full md:w-64" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Skeleton className="h-5 w-5" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <Skeleton className="h-5 w-32" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="overflow-hidden">
+            <Skeleton className="h-[120px] w-full" />
+            <CardContent className="p-2">
+              <Skeleton className="h-5 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-5 w-1/2" />
+            </CardContent>
+            <div className="p-2 pt-0">
+              <Skeleton className="h-8 w-full" />
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }

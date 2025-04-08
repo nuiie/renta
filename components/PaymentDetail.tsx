@@ -5,44 +5,9 @@ import { DollarSign, AlertTriangle } from "lucide-react"
 import { getPayment } from "@/lib/directFetchAirtable"
 import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
 
-// Define the Payment type
-interface Payment {
-  airtableId: string
-  contractAId: string
-  amountToBePaid: number
-  paidAmount: number
-  due: Date
-  paidDate?: Date
-  paymentStatus: string
-  paymentNumber: number
-  paymentType: string
-  bank?: string
-  desc?: string
-}
-
-export default async function PaymentDetail({ propertyId }: { propertyId: number }) {
-  const paymentRecords = await getPayment()
-
-  // Filter payments for this property
-  const payments = paymentRecords
-    .filter(record => {
-      // We need to find payments associated with contracts for this property
-      // This is a simplified approach - in a real app, you might need to join with contracts
-      return record.fields.contract_id && record.fields.contract_id.includes(propertyId.toString())
-    })
-    .map(record => ({
-      airtableId: record.id,
-      contractAId: record.fields.contract_id,
-      amountToBePaid: record.fields.amount_to_be_paid || 0,
-      paidAmount: record.fields.paid_amount || 0,
-      due: new Date(record.fields.due),
-      paidDate: record.fields.paid_date ? new Date(record.fields.paid_date) : undefined,
-      paymentStatus: record.fields.payment_status,
-      paymentNumber: record.fields.payment_number || 0,
-      paymentType: record.fields.payment_type || 'Unknown',
-      bank: record.fields.bank,
-      desc: record.fields.desc
-    }))
+export async function PaymentDetail({ contractId }: { contractId: string }) {
+  // Fetch payments filtered by contract ID directly from the API
+  const payments = await getPayment({ contractId: parseInt(contractId) })
 
   if (payments.length === 0) {
     return null
@@ -132,7 +97,7 @@ export default async function PaymentDetail({ propertyId }: { propertyId: number
             </div>
 
             <div className="divide-y max-h-[400px] overflow-y-auto">
-              {payments.sort(p => p.paymentNumber).map((payment, i) => (
+              {payments.sort((a, b) => a.paymentNumber - b.paymentNumber).map((payment, i) => (
                 <details key={i} className="group">
                   <summary className="grid grid-cols-12 gap-x-1 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 list-none">
                     <div className="col-span-3 font-medium">
@@ -198,5 +163,48 @@ export default async function PaymentDetail({ propertyId }: { propertyId: number
         </CardContent>
       </Card>
     </>
+  )
+}
+
+export function PaymentDetailSkeleton() {
+  return (
+    <Card>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-base font-medium">
+          Payment History
+        </CardTitle>
+        <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="text-xs">
+          <div className="grid grid-cols-12 gap-x-1 px-3 py-2 font-medium bg-gray-50 dark:bg-gray-800">
+            <div className="col-span-3">Period</div>
+            <div className="col-span-3">Due Date</div>
+            <div className="col-span-3 text-right">Amount</div>
+            <div className="col-span-3 text-right">Status</div>
+          </div>
+          <div className="divide-y max-h-[400px] overflow-y-auto">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="group">
+                <div className="grid grid-cols-12 gap-x-1 px-3 py-2">
+                  <div className="col-span-3">
+                    <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  </div>
+                  <div className="col-span-3">
+                    <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  </div>
+                  <div className="col-span-3 text-right">
+                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto" />
+                  </div>
+                  <div className="col-span-3 text-right">
+                    <div className="h-5 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

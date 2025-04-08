@@ -43,14 +43,14 @@ async function fetchAirtableTable<T>(
         filterByFormula?: string,
         pageSize?: number,
         offset?: string
-    } = { revalidate: 86400, pageSize: 100 } // 1 day default, 100 records per page
+    } = { revalidate: 7200, pageSize: 100 } // 2 hours default, 100 records per page
 ): Promise<AirtableRecord<T>[]> {
     try {
         const url = new URL(`${AIRTABLE_API_URL}/${encodeURIComponent(table)}`)
 
         // Add filter if provided
         if (options.filterByFormula) {
-            url.searchParams.append('filterByFormula', encodeURIComponent(options.filterByFormula))
+            url.searchParams.append('filterByFormula', options.filterByFormula)
         }
 
         // Add pagination parameters
@@ -109,7 +109,21 @@ function mapProperty(record: AirtableRecord<PropertyFields>): Property {
         maxRent: record.fields.max_rent || 0,
         daysLeft: record.fields.days_left || 0,
         launchDate: record.fields.launch_date ? new Date(record.fields.launch_date) : new Date(),
-        images: record.fields.images || [],
+        images: (record.fields.images || []).map((img: any) => {
+            // Use a placeholder image URL if the Airtable URL is likely to be expired
+            // This is a temporary solution until we implement a proper URL refresh mechanism
+            const usePlaceholder = false // Set to true to use placeholders instead of potentially expired URLs
+
+            return {
+                id: img.id,
+                url: usePlaceholder ? '/images/placeholder.jpg' : img.url,
+                filename: img.filename,
+                size: img.size,
+                type: img.type,
+                width: img.width || 0,
+                height: img.height || 0
+            }
+        }),
         currentContractId: record.fields.current_contract?.[0] || undefined
     }
 }
@@ -198,12 +212,12 @@ export async function getPayment(options: {
         if (options.overdue) {
             filterByFormula = '{payment_status}="Overdue"'
         } else if (options.contractId) {
-            filterByFormula = `{contract_id}='${options.contractId}'`
+            filterByFormula = `contract_id=${options.contractId}`
         } else if (options.dayRange) {
             const { firstDay, lastDay } = options.dayRange
             filterByFormula = `AND(IS_AFTER({due}, DATETIME_PARSE('${firstDay}')), IS_BEFORE({due}, DATETIME_PARSE('${lastDay}')))`
         }
-
+        console.log('filterByFormula', filterByFormula)
         const records = await fetchAirtableTable<PaymentFields>('payment', { filterByFormula })
         return records.map(mapPayment)
     } catch (error) {

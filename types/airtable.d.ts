@@ -75,12 +75,6 @@ declare global {
     type: string
     width: number
     height: number
-    thumbnailsSmallUrl: string
-    thumbnailsLargeUrl: string
-    thumbnailsSmallWidth: number
-    thumbnailsSmallHeight: number
-    thumbnailsLargeWidth: number
-    thumbnailsLargeHeight: number
   }
 
   enum PaymentType {
