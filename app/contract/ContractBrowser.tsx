@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import PaymentModal from "@/components/payment-modal"
 import { Suspense } from "react"
-import { ChevronRight, Loader2, Plus } from "lucide-react"
+import { ChevronRight, Loader2 } from "lucide-react"
 
 export default function ContractBrowser({
   contracts,

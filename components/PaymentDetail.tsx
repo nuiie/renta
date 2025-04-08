@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { DollarSign, AlertTriangle } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { getPayment } from "@/lib/directFetchAirtable"
 import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
 

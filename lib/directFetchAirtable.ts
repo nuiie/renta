@@ -16,6 +16,16 @@ type AirtableResponse<T> = {
     offset?: string
 }
 
+interface AirtableImage {
+    id: string
+    url: string
+    filename: string
+    size: number
+    type: string
+    width?: number
+    height?: number
+}
+
 interface Payment {
     airtableId: string
     id: number
@@ -109,7 +119,7 @@ function mapProperty(record: AirtableRecord<PropertyFields>): Property {
         maxRent: record.fields.max_rent || 0,
         daysLeft: record.fields.days_left || 0,
         launchDate: record.fields.launch_date ? new Date(record.fields.launch_date) : new Date(),
-        images: (record.fields.images || []).map((img: any) => {
+        images: (record.fields.images || []).map((img: AirtableImage) => {
             // Use a placeholder image URL if the Airtable URL is likely to be expired
             // This is a temporary solution until we implement a proper URL refresh mechanism
             const usePlaceholder = false // Set to true to use placeholders instead of potentially expired URLs

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Plus, Filter, Search, ArrowUpDown, Info, Wrench, Package } from "lucide-react"
+import { Filter, Search, ArrowUpDown, Info, Wrench, Package } from "lucide-react"
 import { toCurrency } from "@/lib/utils"
 
 // Define the enum locally to avoid issues with global types in client components

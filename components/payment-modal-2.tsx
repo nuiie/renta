@@ -22,27 +22,27 @@ export default function PaymentModal() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>New Payment</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you&#39;re done.
+            Enter the payment details below.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
+            <Label htmlFor="amount" className="text-right">
+              Amount
             </Label>
-            <Input id="name" value="" className="col-span-3" />
+            <Input id="amount" type="number" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
+            <Label htmlFor="description" className="text-right">
+              Description
             </Label>
-            <Input id="username" value="" className="col-span-3" />
+            <Input id="description" className="col-span-3" />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Save Payment</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

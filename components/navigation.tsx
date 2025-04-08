@@ -7,8 +7,7 @@ import {
   Home,
   Building2,
   FileText,
-  Wrench,
-  Table
+  Wrench
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 
