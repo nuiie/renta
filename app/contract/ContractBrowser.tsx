@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "./ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox"
 import PaymentModal from "@/components/payment-modal"
 import { Suspense } from "react"
 import { ChevronRight, Loader2, Plus } from "lucide-react"
@@ -25,9 +25,9 @@ export default function ContractBrowser({
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Contracts</h1>
         <div className="space-x-2">
-          <Button size="sm" className="gap-1" variant="outline">
+          {/* <Button size="sm" className="gap-1" variant="outline">
             <Plus className="h-4 w-4" /> New Contract
-          </Button>
+          </Button> */}
           <Suspense
             fallback={
               <Button size="sm" className="gap-1" disabled>

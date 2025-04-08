@@ -20,12 +20,12 @@ export function Navigation() {
     { name: "Property", href: "/property", icon: Building2 },
     { name: "Contract", href: "/contract", icon: FileText },
     { name: "Maintenance", href: "/maintenance", icon: Wrench },
-    { name: "Airtable", href: "/airtable", icon: Table },
+    // { name: "Airtable", href: "/airtable", icon: Table },
   ]
 
   return (
     <Card className="sticky top-0 z-10 rounded-none border-b shadow-sm">
-      <div className="flex overflow-x-auto no-scrollbar">
+      <div className="flex justify-between w-full max-w-md mx-auto">
         {links.map((link) => {
           const Icon = link.icon
           const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`)
@@ -35,14 +35,14 @@ export function Navigation() {
               key={link.href}
               href={link.href}
               className={cn(
-                "flex items-center gap-2 px-4 py-3 text-sm whitespace-nowrap transition-colors",
+                "flex flex-col items-center justify-center gap-0.5 px-2 py-2 text-sm transition-colors w-full",
                 isActive
                   ? "bg-primary text-primary-foreground font-medium"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
-              <span>{link.name}</span>
+              <span className="text-[10px] leading-none">{link.name}</span>
             </Link>
           )
         })}
@@ -50,4 +50,5 @@ export function Navigation() {
     </Card>
   )
 }
+
 

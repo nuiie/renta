@@ -8,18 +8,18 @@ import {
   Home,
   User,
 } from "lucide-react"
-import { getContracts } from "@/lib/airtable"
+import { getContract } from "@/lib/directFetchAirtable"
 import { formatDateDDMMYY, toCurrency } from "@/lib/utils"
-import PaymentDetail from "@/components/PaymentDetail"
+import { PaymentDetail } from "@/components/PaymentDetail"
 
 export default async function ContractDetail({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }) {
-  const { id } = await params
+  const { id } = params
 
-  const contracts = (await getContracts({ current: false })).filter((c) => c.id === parseInt(id))
+  const contracts = (await getContract({ current: false })).filter((c: Contract) => c.id === parseInt(id))
 
   if (contracts.length === 0) {
     return <div>Contract not found</div>
@@ -106,7 +106,7 @@ export default async function ContractDetail({
         </CardContent>
       </Card>
 
-      <PaymentDetail contract={contract} />
+      <PaymentDetail contractId={id} />
     </div>
   )
 }

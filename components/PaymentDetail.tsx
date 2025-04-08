@@ -83,9 +83,9 @@ export async function PaymentDetail({ contractId }: { contractId: string }) {
           <CardTitle className="text-base font-medium">
             Payment History
           </CardTitle>
-          <Button size="sm" className="gap-1 h-8">
+          {/* <Button size="sm" className="gap-1 h-8">
             <DollarSign className="h-4 w-4" /> Record
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardContent className="p-0">
           <div className="text-xs">
@@ -98,8 +98,8 @@ export async function PaymentDetail({ contractId }: { contractId: string }) {
 
             <div className="divide-y max-h-[400px] overflow-y-auto">
               {payments.sort((a, b) => a.paymentNumber - b.paymentNumber).map((payment, i) => (
-                <details key={i} className="group">
-                  <summary className="grid grid-cols-12 gap-x-1 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 list-none">
+                payment.paymentStatus === "Not Due" ? (
+                  <div key={i} className="grid grid-cols-12 gap-x-1 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800">
                     <div className="col-span-3 font-medium">
                       #{payment.paymentNumber} {payment.paymentType}
                     </div>
@@ -109,54 +109,64 @@ export async function PaymentDetail({ contractId }: { contractId: string }) {
                     </div>
                     <div className="col-span-3 text-right">
                       <Badge
-                        variant={
-                          payment.paymentStatus === "Paid"
-                            ? "default"
-                            : payment.paymentStatus === "Not Due"
-                              ? "outline"
-                              : "destructive"
-                        }
+                        variant="outline"
                         className="text-[10px] px-1.5 py-0"
                       >
                         {payment.paymentStatus}
                       </Badge>
                     </div>
-                  </summary>
-
-                  {/* Expanded details */}
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 text-xs">
-                    {payment.paymentStatus === "Paid" ? (
-                      <div className="grid grid-cols-2 gap-y-1 gap-x-2">
-                        <p className="text-gray-500">Paid Date</p>
-                        <p>{payment.paidDate ? formatDateDDMMYY(payment.paidDate) : ""}</p>
-
-                        <p className="text-gray-500">Paid Amount</p>
-                        <p>{toCurrency(payment.paidAmount)}</p>
-
-                        <p className="text-gray-500">Bank</p>
-                        <p>{payment.bank || ""}</p>
-
-                        <p className="text-gray-500">Note</p>
-                        <p>{payment.desc || ""}</p>
-                      </div>
-                    ) : payment.paymentStatus === "Not Due" ? (
-                      <div className="flex justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-xs h-7"
-                        >
-                          <DollarSign className="h-3 w-3 mr-1" /> Pay Now
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-amber-500">
-                        <AlertTriangle className="h-3 w-3" />
-                        <p>Payment is overdue</p>
-                      </div>
-                    )}
                   </div>
-                </details>
+                ) : (
+                  <details key={i} className="group">
+                    <summary className="grid grid-cols-12 gap-x-1 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 list-none">
+                      <div className="col-span-3 font-medium">
+                        #{payment.paymentNumber} {payment.paymentType}
+                      </div>
+                      <div className="col-span-3">{formatDateDDMMYY(payment.due)}</div>
+                      <div className="col-span-3 text-right">
+                        {toCurrency(payment.amountToBePaid)}
+                      </div>
+                      <div className="col-span-3 text-right">
+                        <Badge
+                          variant={
+                            payment.paymentStatus === "Paid"
+                              ? "default"
+                              : "destructive"
+                          }
+                          className="text-[10px] px-1.5 py-0"
+                        >
+                          {payment.paymentStatus}
+                        </Badge>
+                      </div>
+                    </summary>
+
+                    {/* Expanded details */}
+                    <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 text-xs">
+                      {payment.paymentStatus === "Paid" ? (
+                        <div className="grid grid-cols-2 gap-y-1 gap-x-2">
+                          <p className="text-gray-500">Paid Date</p>
+                          <p>{payment.paidDate ? formatDateDDMMYY(payment.paidDate) : ""}</p>
+
+                          <p className="text-gray-500">Paid Amount</p>
+                          <p>{toCurrency(payment.paidAmount)}</p>
+
+                          <p className="text-gray-500">Bank</p>
+                          <p>{payment.bank || ""}</p>
+
+                          <p className="text-gray-500">Note</p>
+                          <p>{payment.desc || ""}</p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-amber-500 justify-between">
+                          <div className="flex items-center gap-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            <p>Payment is overdue</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                )
               ))}
             </div>
           </div>

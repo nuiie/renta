@@ -147,7 +147,7 @@ declare global {
     paymentStatus: PaymentStatus
     paidDate: Date | null
     paidAmount: number
-    bank: BankAccount
+    bank: BankAccount | null
     desc: string
     nickname: string
     tenant: string
